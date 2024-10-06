@@ -26,9 +26,9 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
   const [err, setErr] = useState("");
   const [url, setUrl] = useState("");
   const dispatch = useDispatch();
-  // const { token } = useSelector((state: RootState) => state.auth);
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3Mjc5Nzk4MzMsImV4cCI6MTcyODA2NjIzM30.RMjEUhLn3eF-itTT2rvOqyMMiWoV41L1AoVjxfSw3I0";
+  // const token =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3MjgwNjk5ODMsImV4cCI6MTcyODE1NjM4M30.XGWw3mRFgIay6vUXJ9hUdRsZdRQKYU2kE7o1LFJ_pJQ";
+
   const itemData = useSelector(
     (state: RootState) => state.selectedItem.itemData
   );

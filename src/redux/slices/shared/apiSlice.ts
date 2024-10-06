@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { GetProductItem, GetProducts } from "../../types";
 
 const baseApiUrl = import.meta.env.VITE_BASE_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
@@ -9,8 +10,12 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: baseURL,
     prepareHeaders: (headers, { getState }) => {
+      // const state = getState() as { auth: { token?: string } };
+      // const token = state.auth?.token;
+
       const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3Mjc5Nzk4MzMsImV4cCI6MTcyODA2NjIzM30.RMjEUhLn3eF-itTT2rvOqyMMiWoV41L1AoVjxfSw3I0";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3MjgyMjE4NTcsImV4cCI6MTcyODMwODI1N30.SwVg2Bsw2oX5J4EKSb8vUUa9elrPFrv4JZArMrL5DZY";
+
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -130,6 +135,19 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Order"],
     }),
+    getSiteProducts: builder.query<GetProducts, void>({
+      query: () => "/site/products?perPage=100",
+    }),
+    getProductById: builder.query<GetProductItem, string>({
+      query: (id) => `/site/products/${id}`,
+    }),
+    addRemoveFavorite: builder.mutation<unknown, void>({
+      query: ({ product_id }) => ({
+        url: "/site//products/favorites",
+        method: "PUT",
+        body: { product_id },
+      }),
+    }),
   }),
 });
 
@@ -146,4 +164,7 @@ export const {
   useAddOrderMutation,
   useUpdateOrderMutation,
   useDeleteOrderMutation,
+  useGetSiteProductsQuery,
+  useGetProductByIdQuery,
+  useAddRemoveFavoriteMutation,
 } = apiSlice;

@@ -33,6 +33,7 @@ const ProductsItem = ({
   handleCheckboxChange,
   setUpdateList,
   setOpen,
+  onDeleteProduct,
 }: Props) => {
   const dispatch = useDispatch();
   const url = item?.images?.[0] as { url: string };
@@ -42,6 +43,12 @@ const ProductsItem = ({
     setOpen(true);
     dispatch(selectItem({ itemData: { item, status } }));
   };
+
+  const handleDelete = () => {
+    onDeleteProduct(item._id);
+  };
+
+  console.log("item", item);
 
   return (
     <TableRow>
@@ -80,7 +87,7 @@ const ProductsItem = ({
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete" arrow onClick={() => setOpenModal(true)}>
-          <IconButton>
+          <IconButton onClick={handleDelete}>
             <BiTrash />
           </IconButton>
         </Tooltip>

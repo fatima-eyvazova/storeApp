@@ -12,6 +12,7 @@ import {
 import AddProduct from "../../components/Products/AddProduct/AddProduct";
 import ProductsTable from "../../components/Products/ProductsTable/ProductsTable";
 import DeleteModal from "../../../shared/DeleteModal/DeleteModal";
+import Sidebar from "../../components/Sidebar/Sidebar";
 
 const ProductsDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -57,8 +58,9 @@ const ProductsDashboard = () => {
     refetch();
   };
 
-  const handleDeleteSelectedItems = () => {
-    setOpenDeleteModal(true);
+  const handleDeleteSelectedItems = async (id) => {
+    await deleteProduct(id).unwrap();
+    refetch();
   };
 
   const handleOrderChange = (orderBy: "asc" | "disc") => {
@@ -82,101 +84,97 @@ const ProductsDashboard = () => {
 
   return (
     <>
-      <div className="products-dashboard">
-        <div className="products-top">
-          <h1>Products</h1>
-          <div className="delete-add">
-            <button className="delete" onClick={handleDeleteSelectedItems}>
-              <RiDeleteBin6Line />
-              <span className="text-delete">Delete</span>
-            </button>
-            <button className="add" onClick={toggleDrawer}>
-              <IoAddOutline />
-              <span className="text-add">Add Product</span>
-              <Drawer
-                anchor="right"
-                open={open}
-                onClose={closeDrawer}
-                onClick={(e) => {
-                  e.stopPropagation();
+      <Sidebar>
+        <div className="products-dashboard">
+          <div className="products-top">
+            <h1>Products</h1>
+            <div className="delete-add">
+              <button className="delete" onClick={handleDeleteSelectedItems}>
+                <RiDeleteBin6Line />
+                <span className="text-delete">Delete</span>
+              </button>
+              <button className="add" onClick={toggleDrawer}>
+                <IoAddOutline />
+                <span className="text-add">Add Product</span>
+                <Drawer
+                  anchor="right"
+                  open={open}
+                  onClose={closeDrawer}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <CiCircleRemove
+                    style={{
+                      fontSize: "24px",
+                      position: "absolute",
+                      right: "50px",
+                      top: "30px",
+                      cursor: "pointer",
+                      color: "red",
+                    }}
+                    onClick={closeDrawer}
+                  />
+                  <AddProduct
+                    setOpen={setOpen}
+                    onAddProduct={handleAddProduct}
+                  />
+                </Drawer>
+              </button>
+            </div>
+            <div className="products-filter">
+              <select
+                className="brand"
+                value={selectedBrand}
+                onChange={(e) => {
+                  setSelectedBrand(e.target.value);
                 }}
               >
-                <CiCircleRemove
-                  style={{
-                    fontSize: "24px",
-                    position: "absolute",
-                    right: "50px",
-                    top: "30px",
-                    cursor: "pointer",
-                    color: "red",
-                  }}
-                  onClick={closeDrawer}
-                />
-                <AddProduct setOpen={setOpen} onAddProduct={handleAddProduct} />
-              </Drawer>
-            </button>
-          </div>
-          <div className="products-filter">
-            <input
-              type="text"
-              placeholder="Search Product"
-              className="input-search"
-              value={searchInput}
-              onChange={searchProduct}
-            />
-            <select
-              className="brand"
-              value={selectedBrand}
-              onChange={(e) => {
-                setSelectedBrand(e.target.value);
-              }}
-            >
-              <option value="" disabled selected>
-                Select brand
-              </option>
-              {Array.isArray(categoriesData) &&
-                categoriesData.map((brand) => (
+                <option value="" disabled selected>
+                  Select brand
+                </option>
+                {categoriesData?.data?.map((brand) => (
                   <option key={brand._id} value={brand._id}>
                     {brand.name}
                   </option>
                 ))}
-            </select>
-            <select
-              className="price"
-              onChange={(e) => {
-                handleOrderChange(e.target.value as "asc" | "disc");
-              }}
-            >
-              <option value="" disabled selected>
-                Select Order
-              </option>
-              <option value="asc">Low to High</option>
-              <option value="disc">High to Low</option>
-            </select>
-            <div className="filter-reset">
-              <button className="filter-btn">Filter</button>
-              <button className="reset-btn" onClick={handleResetButtonClick}>
-                Reset
-              </button>
+              </select>
+              <select
+                className="price"
+                onChange={(e) => {
+                  handleOrderChange(e.target.value as "asc" | "disc");
+                }}
+              >
+                <option value="" disabled selected>
+                  Select Order
+                </option>
+                <option value="asc">Low to High</option>
+                <option value="disc">High to Low</option>
+              </select>
+              <div className="filter-reset">
+                <button className="reset-btn" onClick={handleResetButtonClick}>
+                  Reset
+                </button>
+              </div>
             </div>
           </div>
+          <div className="products-table">
+            <ProductsTable
+              list={productsData?.data?.product || []}
+              selectedBrand={selectedBrand}
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
+              onDeleteProduct={handleDeleteProduct}
+              setPage={setPage}
+              totalCount={totalCount}
+              setPerPage={setPerPage}
+              page={page}
+              perPage={perPage}
+              refetch={refetch}
+            />
+          </div>
         </div>
-        <div className="products-table">
-          <ProductsTable
-            list={productsData?.data?.product || []}
-            selectedBrand={selectedBrand}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-            onDeleteProduct={handleDeleteProduct}
-            setPage={setPage}
-            totalCount={totalCount}
-            setPerPage={setPerPage}
-            page={page}
-            perPage={perPage}
-            refetch={refetch}
-          />
-        </div>
-      </div>
+      </Sidebar>
       {openDeleteModal && (
         <DeleteModal
           setOpenModal={setOpenDeleteModal}

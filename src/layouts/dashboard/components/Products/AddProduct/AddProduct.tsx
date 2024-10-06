@@ -34,8 +34,9 @@ const AddProduct = ({ setOpen, setUpdateList }: Props) => {
   const [imgList, setImgList] = useState<FileList | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const dispatch = useDispatch();
+
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3Mjc5Nzk4MzMsImV4cCI6MTcyODA2NjIzM30.RMjEUhLn3eF-itTT2rvOqyMMiWoV41L1AoVjxfSw3I0";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3MjgyMjE4NTcsImV4cCI6MTcyODMwODI1N30.SwVg2Bsw2oX5J4EKSb8vUUa9elrPFrv4JZArMrL5DZY";
   const itemData = useSelector(
     (state: RootState) => state.selectedItem.itemData
   );

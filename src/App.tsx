@@ -1,22 +1,21 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Sidebar from "./layouts/dashboard/components/Sidebar/Sidebar";
-import Products from "./layouts/dashboard/pages/ProductsDashboard/ProductsPage";
-import Category from "./layouts/dashboard/pages/CategoryDashboard/CategoryDasbboard";
+import { RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
+// import { PersistGate } from "redux-persist/integration/react";
 
-function App() {
+import router from "./router/router";
+import {
+  store,
+  // persistor
+} from "./redux/store";
+
+const App = () => {
   return (
     <Provider store={store}>
-      <Router>
-        <Sidebar />
-        <Routes>
-          <Route path="/products" element={<Products />} />
-          <Route path="/category" element={<Category />} />
-        </Routes>
-      </Router>
+      {/* <PersistGate loading={null} persistor={persistor}> */}
+      <RouterProvider router={router} />
+      {/* </PersistGate> */}
     </Provider>
   );
-}
+};
 
 export default App;

@@ -36,3 +36,18 @@ export type RootState = {
   auth: Profile;
   selectedItem: SelectedItemDashboard;
 };
+
+export interface GetProductItem {
+  _id: string;
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+}
+
+export interface GetProducts {
+  data: {
+    product: GetProductItem[];
+    totalCount: number;
+  };
+}

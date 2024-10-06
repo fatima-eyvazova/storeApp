@@ -9,6 +9,7 @@ import {
 } from "../../../../redux/slices/shared/apiSlice";
 import CategoryTable from "../../components/Category/CategoryTable/CategoryTable";
 import AddEditeCategory from "../../components/Category/AddEditeCategory/AddEditeCategory";
+import Sidebar from "../../components/Sidebar/Sidebar";
 
 const CategoryPage = () => {
   const [open, setOpen] = useState(false);
@@ -44,58 +45,60 @@ const CategoryPage = () => {
   if (error) return <Typography>Error loading categories</Typography>;
 
   return (
-    <Box sx={{ padding: "20px" }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <Typography variant="h4" component="h1" sx={{ fontWeight: "bold" }}>
-          Category
-        </Typography>
-        <Box>
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<RiDeleteBin6Line />}
-            sx={{ marginRight: "10px" }}
-            onClick={handleDeleteSelectedItems}
-            disabled={!selectedItems.length}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<IoAddOutline />}
-            onClick={toggleDrawer}
-          >
-            Add Category
-          </Button>
+    <Sidebar>
+      <Box sx={{ padding: "20px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <Typography variant="h4" component="h1" sx={{ fontWeight: "bold" }}>
+            Category
+          </Typography>
+          <Box>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<RiDeleteBin6Line />}
+              sx={{ marginRight: "10px" }}
+              onClick={handleDeleteSelectedItems}
+              disabled={!selectedItems.length}
+            >
+              Delete
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<IoAddOutline />}
+              onClick={toggleDrawer}
+            >
+              Add Category
+            </Button>
+          </Box>
         </Box>
+
+        <CategoryTable
+          list={data?.data || []}
+          setOpen={setOpen}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
+        />
+
+        <Drawer anchor="right" open={open} onClose={closeDrawer}>
+          <AddEditeCategory setOpen={setOpen} setUpdateList={() => {}} />
+        </Drawer>
+
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          message={snackbarMessage}
+        />
       </Box>
-
-      <CategoryTable
-        list={data?.data || []}
-        setOpen={setOpen}
-        selectedItems={selectedItems}
-        setSelectedItems={setSelectedItems}
-      />
-
-      <Drawer anchor="right" open={open} onClose={closeDrawer}>
-        <AddEditeCategory setOpen={setOpen} setUpdateList={() => {}} />
-      </Drawer>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={snackbarMessage}
-      />
-    </Box>
+    </Sidebar>
   );
 };
 

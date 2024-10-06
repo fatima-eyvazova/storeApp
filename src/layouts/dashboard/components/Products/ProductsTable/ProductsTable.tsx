@@ -59,6 +59,7 @@ const ProductsTable = ({
   setPerPage,
   setOpen,
   refetch,
+  onDeleteProduct,
 }: Props) => {
   const handleCheckboxChange = (itemId: string) => {
     const updatedSelectedItems = selectedItems.includes(itemId)
@@ -93,6 +94,11 @@ const ProductsTable = ({
     refetch();
   };
 
+  const paginatedList = filteredList.slice(
+    page * perPage,
+    page * perPage + perPage
+  );
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
@@ -126,6 +132,7 @@ const ProductsTable = ({
                 selectedItems={selectedItems}
                 handleCheckboxChange={handleCheckboxChange}
                 setUpdateList={setUpdateList}
+                onDeleteProduct={onDeleteProduct}
               />
             ))
           : []}
