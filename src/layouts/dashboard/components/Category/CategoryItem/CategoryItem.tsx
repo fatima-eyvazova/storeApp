@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { selectItem } from "../../../../../redux/slices/dashboard/selectedItemSlice";
-import DeleteModal from "../../../../shared/DeleteModal/DeleteModal";
+import DeleteModal from "../../../../shared/modals/DeleteModal/DeleteModal";
 // const label = { inputProps: { "aria-label": "Switch demo" } };
 
 interface Props {
@@ -43,7 +43,6 @@ const CategoryItem = ({
     setOpen(true);
     dispatch(selectItem({ itemData: { item, status } }));
   };
-
   return (
     <TableBody>
       <TableRow>

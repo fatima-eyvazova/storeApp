@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IoAddOutline } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Drawer from "@mui/material/Drawer";
-import { Box, Typography, Button, Snackbar } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import {
   useGetCategoriesQuery,
   useDeleteCategoryMutation,
@@ -14,8 +14,6 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 const CategoryPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const { data, error, isLoading } = useGetCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
@@ -33,12 +31,6 @@ const CategoryPage = () => {
       await deleteCategory(itemId);
     }
     setSelectedItems([]);
-    setSnackbarMessage("Selected categories deleted successfully!");
-    setSnackbarOpen(true);
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
   };
 
   if (isLoading) return <Typography>Loading...</Typography>;
@@ -90,13 +82,6 @@ const CategoryPage = () => {
         <Drawer anchor="right" open={open} onClose={closeDrawer}>
           <AddEditeCategory setOpen={setOpen} setUpdateList={() => {}} />
         </Drawer>
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          message={snackbarMessage}
-        />
       </Box>
     </Sidebar>
   );

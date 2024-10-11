@@ -26,12 +26,11 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
   const [err, setErr] = useState("");
   const [url, setUrl] = useState("");
   const dispatch = useDispatch();
-  // const token =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3MjgwNjk5ODMsImV4cCI6MTcyODE1NjM4M30.XGWw3mRFgIay6vUXJ9hUdRsZdRQKYU2kE7o1LFJ_pJQ";
 
   const itemData = useSelector(
     (state: RootState) => state.selectedItem.itemData
   );
+
   const item = itemData?.item;
   const oneMb = 1048576;
   const fourMb = oneMb * 4;
@@ -75,6 +74,7 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
           name: values.name,
           image: imgBase64,
         });
+
         handleResponse(res);
       }
     } catch (e) {
@@ -88,20 +88,18 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
       setErr("");
       setOpen(false);
       setUpdateList((prev) => !prev);
+      dispatch(selectItem({ itemData: { item: null, status: "" } }));
     } else {
       setErr(data?.message || "An error occurred");
     }
   };
 
   useEffect(() => {
-    setUrl(item?.image?.url || "");
-  }, [item?.image?.url]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(selectItem({ itemData: { item: null, status: "" } }));
-    };
-  }, []);
+    if (item?.image?.url) {
+      setUrl(item?.image?.url);
+      setValue("image", item?.image?.url);
+    }
+  }, [item?.image?.url, setValue]);
 
   const isBtnDisabled =
     !isValid || isLoading || (!isDirty && itemData?.status !== "edit");
