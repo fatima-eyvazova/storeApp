@@ -1,20 +1,26 @@
 import { useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../../../../redux/slices/shared/apiSlice";
 import {
-  Card,
-  CardContent,
-  CardMedia,
+  // Card,
+  // CardContent,
+  // CardMedia,
   Typography,
   Box,
-  Button,
+  // Button,
 } from "@mui/material";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+// import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
+import { Breadcrumbs, Link } from "@mui/material";
+import { IoIosArrowForward } from "react-icons/io";
+import { Link as RouterLink } from "react-router-dom";
+import ProductInfo from "../../../site/components/ProductInfo/ProductInfo";
+import MainLayout from "../../components/shared/MainLayout/MainLayout";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/types";
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3MjgyMjE4NTcsImV4cCI6MTcyODMwODI1N30.SwVg2Bsw2oX5J4EKSb8vUUa9elrPFrv4JZArMrL5DZY";
+  const token = useSelector((state: RootState) => state.auth.token);
 
   const { data, error, isLoading } = useGetProductByIdQuery(id || "", {
     skip: !token,
@@ -26,102 +32,37 @@ const ProductDetails: React.FC = () => {
   const product = data?.data;
 
   return (
-    <div className="product-details">
-      {product && (
-        <Card
-          sx={{
-            maxWidth: "1000px",
-            margin: "32px auto",
-            padding: "16px",
-            display: "flex",
-            flexDirection: "row",
-            gap: "24px",
-            boxShadow: 3,
-            borderRadius: 2,
-            backgroundColor: "#f9f9f9",
-          }}
-        >
-          <CardMedia
-            component="img"
-            height="400"
-            image={
-              product.images && product.images.length > 0
-                ? product.images[0].url
-                : ""
-            }
-            alt={product.title}
-            sx={{
-              objectFit: "contain",
-              maxWidth: "400px",
-              borderRadius: "8px",
-            }}
-          />
-          <CardContent
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <Typography
-              variant="h3"
-              component="div"
-              gutterBottom
-              sx={{ fontWeight: "bold" }}
-            >
-              {product.title}
-            </Typography>
-            <Typography variant="body1" color="text.secondary" gutterBottom>
-              {product.description}
-            </Typography>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{ marginBottom: 2 }}
-            >
-              <Typography
-                variant="h4"
-                component="span"
-                sx={{ fontWeight: "bold" }}
-              >
-                ${product.productPrice}
+    <MainLayout>
+      <Box className="product-details" py={4}>
+        {product && (
+          <Box className="container">
+            <Box className="product-content" mb={3}>
+              <Typography variant="h4" component="h2" gutterBottom>
+                {product?.title}
               </Typography>
-              {product.salePrice < product.productPrice && (
-                <Typography
-                  variant="h5"
-                  color="red"
-                  sx={{ textDecoration: "line-through" }}
+
+              <Breadcrumbs
+                aria-label="breadcrumb"
+                separator={<IoIosArrowForward fontSize="small" />}
+                sx={{ mb: 2 }}
+              >
+                <Link
+                  component={RouterLink}
+                  to="/"
+                  underline="hover"
+                  color="inherit"
                 >
-                  ${product.salePrice}
-                </Typography>
-              )}
+                  Home
+                </Link>
+                <Typography color="text.primary">{product?.title}</Typography>
+              </Breadcrumbs>
             </Box>
-            <Typography variant="body1" color="text.secondary">
-              {product.stock > 0
-                ? `Mövcuddur: ${product.stock} ədəd`
-                : "Stokda yoxdur"}
-            </Typography>
-            <Box display="flex" gap={2} sx={{ marginTop: 3 }}>
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<ShoppingCartIcon />}
-              >
-                Səbətə əlavə et
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<FavoriteBorderIcon />}
-              >
-                Favoritlərə əlavə et
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+
+            <ProductInfo product={product} />
+          </Box>
+        )}
+      </Box>
+    </MainLayout>
   );
 };
 
