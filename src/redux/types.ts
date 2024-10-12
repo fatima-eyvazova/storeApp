@@ -1,6 +1,4 @@
-import { GetBrandItem } from "../layouts/dashboard/pages/Brands/types";
-import { GetProductItem } from "../layouts/dashboard/pages/ProductsDashboard/types";
-
+import { GetCategoryItem } from "../layouts/dashboard/pages/CategoryDashboard/types";
 export interface BasketProduct extends GetProductItem {
   subtotal: number;
   quantity: number;
@@ -20,7 +18,7 @@ export type Profile = {
 
 export type SelectedItemDashboard = {
   itemData: {
-    item: GetBrandItem | GetProductItem | null;
+    item: GetCategoryItem | GetProductItem | null;
     status: "view" | "edit" | "delete" | "";
   };
 };
