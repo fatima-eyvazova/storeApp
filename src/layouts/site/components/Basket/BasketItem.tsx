@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import {
   IconButton,
   TableCell,
@@ -12,69 +12,51 @@ import {
   DeleteOutline,
 } from "@mui/icons-material";
 
-import { useState } from "react";
-import { BasketProduct, RootState } from "../../../../redux/types";
-import {
-  useRemoveBasketItemMutation,
-  useUpdateBasketItemMutation,
-} from "../../../../redux/slices/shared/apiSlice";
-import {
-  addToBasket,
-  decreaseItem,
-  removeItem,
-} from "../../../../redux/slices/site/basketSlice";
-
 type Props = {
-  product: BasketProduct;
+  product: {
+    _id: string;
+    quantity: number;
+    product: {
+      title: string;
+      salePrice: number;
+      subtotal: number;
+      images: { url: string }[];
+    };
+  };
+  onUpdate: (id: string, quantity: number) => void;
+  onRemove: (id: string) => void;
 };
 
-const BasketItem = ({ product }: Props) => {
+const BasketItem = ({ product, basketItem, onUpdate, onRemove }: Props) => {
+  const [localQuantity, setLocalQuantity] = useState(basketItem?.productCount);
   const [updating, setUpdating] = useState(false);
-  const { token, user } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch();
-
-  const [updateBasketItem] = useUpdateBasketItemMutation();
-  const [removeBasketItem] = useRemoveBasketItemMutation();
+  console.log("product", product);
 
   const handleIncreaseQuantity = async () => {
-    if (token && user?.role === "client") {
-      setUpdating(true);
-      await updateBasketItem({
-        id: product._id,
-        productCount: product.quantity + 1,
-        token,
-      });
-      dispatch(addToBasket({ ...product, quantity: 1 }));
-      setUpdating(false);
-    }
+    setUpdating(true);
+    const newQuantity = localQuantity + 1;
+    setLocalQuantity(newQuantity);
+    await onUpdate(basketItem._id, newQuantity, product._id);
+    setUpdating(false);
   };
 
   const handleDecreaseQuantity = async () => {
-    if (token && user?.role === "client") {
+    if (localQuantity > 1) {
       setUpdating(true);
-      if (product.quantity > 1) {
-        await updateBasketItem({
-          id: product._id,
-          productCount: product.quantity - 1,
-          token,
-        });
-        dispatch(decreaseItem({ _id: product._id, price: product.salePrice }));
-      } else {
-        await removeBasketItem({ id: product._id, token });
-        dispatch(removeItem({ _id: product._id, subtotal: product.subtotal }));
-      }
+      const newQuantity = localQuantity - 1;
+      setLocalQuantity(newQuantity);
+      await onUpdate(product._id, newQuantity);
       setUpdating(false);
+    } else {
+      await handleRemoveItem();
     }
   };
 
   const handleRemoveItem = async () => {
-    if (token && user?.role === "client") {
-      await removeBasketItem({ id: product._id, token });
-      dispatch(removeItem({ _id: product._id, subtotal: product.subtotal }));
-    }
+    await onRemove(product._id);
   };
 
-  const image = product?.images?.[0]?.url;
+  const image = product?.images[0]?.url;
 
   return (
     <TableRow>
@@ -82,32 +64,34 @@ const BasketItem = ({ product }: Props) => {
         <Box
           component="img"
           src={image}
-          alt={product.title}
+          alt={product?.title}
           sx={{ width: 100, height: 100, objectFit: "contain" }}
         />
       </TableCell>
       <TableCell>
-        <Typography>{product?.title?.slice(0, 18)}...</Typography>
+        <Typography>{product?.title}</Typography>
       </TableCell>
       <TableCell>
-        <Typography>${product?.salePrice}</Typography>
+        <Typography>${product?.salePrice?.toFixed(2)}</Typography>
       </TableCell>
       <TableCell>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton onClick={handleDecreaseQuantity} disabled={updating}>
+          <IconButton onClick={handleDecreaseQuantity}>
             <RemoveCircleOutline />
           </IconButton>
-          <Typography>{product.quantity}</Typography>
-          <IconButton onClick={handleIncreaseQuantity} disabled={updating}>
+          <Typography>{localQuantity}</Typography>
+          <IconButton onClick={handleIncreaseQuantity}>
             <AddCircleOutline />
           </IconButton>
         </Box>
       </TableCell>
+      {/* <TableCell>
+        <Typography>
+          ${(product?.salePrice * localQuantity).toFixed(2)}
+        </Typography>
+      </TableCell> */}
       <TableCell>
-        <Typography>${product.subtotal}</Typography>
-      </TableCell>
-      <TableCell>
-        <IconButton onClick={handleRemoveItem} disabled={updating}>
+        <IconButton onClick={handleRemoveItem}>
           <DeleteOutline />
         </IconButton>
       </TableCell>

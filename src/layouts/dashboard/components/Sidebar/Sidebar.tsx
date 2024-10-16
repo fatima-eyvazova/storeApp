@@ -1,29 +1,28 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { TbBrandSafari, TbBrand4Chan } from "react-icons/tb";
+import { RiAdminLine } from "react-icons/ri";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
-  Box,
-  Typography,
-} from "@mui/material";
+import { useSelector } from "react-redux";
+import { Box, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../../router/routeNames";
+import { RootState } from "../../../../redux/types";
+import LogOutModal from "../../../shared/modals/LogOutModal/LogOutModal";
+import LinkItem from "./LinkItem/LinkItem";
 
 const Sidebar = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const toggleDrawer = () => setIsOpen(!isOpen);
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const navigate = useNavigate();
-  const menuItem = [
+  const adminInfo = useSelector((state: RootState) => state.auth.user);
+  const userRole = adminInfo?.role;
+
+  const menuItems = [
     {
+      path: ROUTES.orders,
       name: "Orders",
-      path: "/orders",
       icon: <TbBrandSafari />,
     },
     {
@@ -33,7 +32,7 @@ const Sidebar = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
     },
     {
       path: ROUTES.category,
-      name: "Category",
+      name: "Categories",
       icon: <TbBrand4Chan />,
     },
     {
@@ -42,82 +41,77 @@ const Sidebar = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
     },
   ];
 
-  const handleNavigation = (path) => {
-    toggleDrawer();
-    navigate(path);
+  if (userRole === "superadmin") {
+    menuItems.splice(2, 0, {
+      path: ROUTES.ourStaff as never,
+      name: "Our Staff",
+      icon: <RiAdminLine />,
+    });
+  }
+
+  const logOutUserHandler = () => {
+    setOpenLogoutModal(true);
+  };
+
+  const handleNavigation = (path: string | undefined) => {
+    if (path) {
+      navigate(path);
+    } else {
+      logOutUserHandler();
+    }
   };
 
   return (
     <>
-      <Box>
-        <Box>
-          <IconButton
-            onClick={toggleDrawer}
+      <Box sx={{ display: "flex", height: "100vh" }}>
+        <Box
+          sx={{
+            backgroundColor: "black",
+            color: "white",
+            width: isOpen ? "250px" : "60px",
+            transition: "width 0.3s ease",
+          }}
+        >
+          <Box
             sx={{
-              position: "absolute",
-              top: 16,
-              left: 16,
-              color: "#fff",
-              backgroundColor: "#1f1f1f",
-              "&:hover": {
-                backgroundColor: "#333",
-              },
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "20px",
+              borderBottom: "1px solid #555",
             }}
           >
-            <FaBars size={24} />
-          </IconButton>
-
-          <Drawer
-            anchor="left"
-            open={isOpen}
-            onClose={toggleDrawer}
-            sx={{
-              "& .MuiDrawer-paper": {
-                backgroundColor: "#1f1f1f",
-                color: "#fff",
-                width: 250,
-              },
-            }}
-          >
+            {isOpen && (
+              <Box
+                component="img"
+                src="/src/assets/images/logo.png"
+                alt="logo"
+                sx={{
+                  width: "100px",
+                  marginRight: "20px",
+                }}
+              />
+            )}
             <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 80,
-                borderBottom: "1px solid #444",
-                mb: 2,
-              }}
+              sx={{ cursor: "pointer", marginLeft: isOpen ? "0px" : "10px" }}
             >
-              <Typography variant="h6" sx={{ color: "#fff" }}>
-                Dashboard
-              </Typography>
+              <FaBars onClick={() => setIsOpen(!isOpen)} />
             </Box>
+          </Box>
 
-            <List>
-              {menuItem.map((item, index) => (
-                <ListItem
-                  button
-                  key={index}
-                  onClick={() => handleNavigation(item.path)}
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "#333",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ color: "#fff" }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.name} />
-                </ListItem>
-              ))}
-            </List>
-          </Drawer>
+          {menuItems.map((item, index) => (
+            <LinkItem
+              key={index}
+              icon={item.icon}
+              name={item.name}
+              isOpen={isOpen}
+              onClick={() => handleNavigation(item.path)}
+            />
+          ))}
         </Box>
-        <main>{children}</main>
+        <Box sx={{ flex: 1, padding: "20px" }}>{children}</Box>
       </Box>
+      {openLogoutModal && <LogOutModal setOpenModal={setOpenLogoutModal} />}
     </>
   );
 };

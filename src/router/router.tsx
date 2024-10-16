@@ -13,6 +13,9 @@ import Login from "../layouts/site/page/Auth/Login/Login";
 import Shop from "../layouts/site/page/Shop/Shop";
 import OurStaff from "../layouts/dashboard/pages/OurStaff/OurStaff";
 import Basket from "../layouts/site/page/Basket/Basket";
+import Favorites from "../layouts/site/page/Favorites/Favorites";
+import Orders from "../layouts/dashboard/pages/Orders/Orders";
+import Checkout from "../layouts/site/page/Checkout/Checkout";
 const router = createBrowserRouter([
   {
     path: ROUTES.dashboardProducts,
@@ -37,6 +40,7 @@ const router = createBrowserRouter([
           </AuthGuard>
         ),
       },
+
       {
         path: ROUTES.register,
         element: (
@@ -52,8 +56,20 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
+    path: ROUTES.favorites,
+    element: <Favorites />,
+  },
+  {
     path: ROUTES.shop,
     element: <Shop />,
+  },
+  {
+    path: ROUTES.checkout,
+    element: (
+      <InnerRouteGuard isClient={true}>
+        <Checkout />
+      </InnerRouteGuard>
+    ),
   },
 
   {
@@ -70,6 +86,14 @@ const router = createBrowserRouter([
     element: (
       <InnerRouteGuard isClient={false}>
         <OurStaff />
+      </InnerRouteGuard>
+    ),
+  },
+  {
+    path: ROUTES.orders,
+    element: (
+      <InnerRouteGuard isClient={false}>
+        <Orders />
       </InnerRouteGuard>
     ),
   },
