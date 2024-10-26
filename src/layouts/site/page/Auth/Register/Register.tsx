@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   TextField,
   Button,
-  Container,
   Typography,
   CircularProgress,
   List,
@@ -17,15 +16,18 @@ import MainLayout from "../../../components/shared/MainLayout/MainLayout";
 import { registerSchema } from "../../../../../validationSchema/register";
 import { useRegisterUserMutation } from "../../../../../redux/slices/shared/apiSlice";
 import { Box } from "@mui/system";
-
-type FormValues = {
-  name: string;
-  password: string;
-  email: string;
-  surname: string;
-};
+import { useTranslation } from "react-i18next";
+import { FormValues } from "./type";
+import {
+  boxStyles,
+  buttonStyles,
+  innerBoxStyles,
+  navigationListStyles,
+  registerNavStyles,
+} from "../../../../../constants";
 
 const Register = () => {
+  const { t } = useTranslation();
   const [err, setErr] = useState<string>("");
   const navigate = useNavigate();
 
@@ -60,97 +62,54 @@ const Register = () => {
 
   return (
     <MainLayout>
-      <Box
-        sx={{
-          mt: 4,
-          padding: 7,
-          borderRadius: 2,
-          boxShadow: 3,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: "sm",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+      <Box sx={boxStyles}>
+        <Box sx={innerBoxStyles}>
           <Box sx={{ mb: 4 }}>
             <Typography
               variant="h4"
               sx={{ fontWeight: "bold", textAlign: "center" }}
             >
-              Account
+              {t("account")}
             </Typography>
-            <List
-              className="navigation"
-              style={{
-                listStyle: "none",
-                padding: 0,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
+            <List style={navigationListStyles}>
               <ListItem>
                 <Link
                   to={ROUTES.home}
                   className="link"
                   style={{ textDecoration: "none" }}
                 >
-                  Home
+                  {t("homeLogin")}
                 </Link>
-                <IoIosArrowForward className="row-icon" />
+                <IoIosArrowForward />
               </ListItem>
               <ListItem>
-                <Typography variant="body1">Account</Typography>
+                <Typography variant="body1"> {t("account")}</Typography>
               </ListItem>
             </List>
           </Box>
 
-          <div className="register-wrapper">
-            <div
-              className="register-nav"
-              style={{
-                display: "flex",
-                marginBottom: "2px",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-              }}
-            >
-              <Link
-                to={ROUTES.login}
-                className="link-register"
-                style={{ textDecoration: "none" }}
-              >
+          <Box>
+            <Box sx={registerNavStyles}>
+              <Link to={ROUTES.login} style={{ textDecoration: "none" }}>
                 <Typography variant="h6" sx={{ color: "black" }}>
-                  Log in |
+                  {t("login")} |
                 </Typography>
               </Link>
-              <Link
-                to={ROUTES.register}
-                className="link-active"
-                style={{ textDecoration: "none" }}
-              >
+              <Link to={ROUTES.register} style={{ textDecoration: "none" }}>
                 <Typography
                   variant="h6"
                   sx={{ fontWeight: "bold", color: "#26c6d0" }}
                 >
-                  Register
+                  {t("register")}
                 </Typography>
               </Link>
-            </div>
+            </Box>
 
-            <div className="tab-content">
-              <div className="form-container">
+            <div>
+              <div>
                 <form onSubmit={handleSubmit(handleFormSubmit)}>
                   <TextField
-                    label="First Name"
+                    label={t("first_name")}
                     fullWidth
                     {...register("name")}
                     error={!!errors.name}
@@ -161,7 +120,7 @@ const Register = () => {
                   />
 
                   <TextField
-                    label="Last Name"
+                    label={t("last_name")}
                     fullWidth
                     {...register("surname")}
                     error={!!errors.surname}
@@ -172,7 +131,7 @@ const Register = () => {
                   />
 
                   <TextField
-                    label="Email"
+                    label={t("emailRegister")}
                     type="email"
                     fullWidth
                     {...register("email")}
@@ -184,7 +143,7 @@ const Register = () => {
                   />
 
                   <TextField
-                    label="Password"
+                    label={t("passwordRegister")}
                     type="password"
                     fullWidth
                     {...register("password")}
@@ -209,20 +168,15 @@ const Register = () => {
                       fullWidth
                       disabled={!isValid || isLoading || !isDirty}
                       endIcon={isLoading && <CircularProgress size={20} />}
-                      sx={{
-                        backgroundColor: "#1976d2",
-                        "&:hover": {
-                          backgroundColor: "#115293",
-                        },
-                      }}
+                      sx={buttonStyles}
                     >
-                      Register
+                      {t("register")}
                     </Button>
                   </div>
                 </form>
               </div>
             </div>
-          </div>
+          </Box>
         </Box>
       </Box>
     </MainLayout>

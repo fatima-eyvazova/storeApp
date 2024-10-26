@@ -2,6 +2,7 @@ import { GetCategoryItem } from "../layouts/dashboard/pages/CategoryDashboard/ty
 export interface BasketProduct extends GetProductItem {
   subtotal: number;
   quantity: number;
+  productCount: number;
 }
 
 export type Profile = {
@@ -41,6 +42,15 @@ export interface GetProductItem {
   price: number;
   description: string;
   imageUrl: string;
+  title: string;
+  productPrice: number;
+  salePrice?: number;
+  images: Array<{ url: string; public_id?: string }>;
+  stock: number;
+  rating: {
+    avgRating: number;
+    overallRatingCount: number;
+  };
 }
 
 export interface GetProducts {

@@ -2,8 +2,11 @@ import { useGetProfileQuery } from "../../../../redux/slices/shared/apiSlice";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import { Container, Typography, Box } from "@mui/material";
 import MainLayout from "../../components/shared/MainLayout/MainLayout";
+import { useTranslation } from "react-i18next";
+import { favoriteItemStyle } from "../../../../constants";
 
 const Favorites = () => {
+  const { t } = useTranslation();
   const { data: userProfile } = useGetProfileQuery();
   const favoriteData = userProfile?.data?.user?.favorites || [];
 
@@ -11,21 +14,14 @@ const Favorites = () => {
     <MainLayout>
       <Container>
         <Typography variant="h4" gutterBottom>
-          Favorite Products
+          {t("titleFavorite")}
         </Typography>
         {favoriteData.length === 0 ? (
           <Box sx={{ textAlign: "center", mt: 2 }}>
-            <Typography variant="h6">No products have been added.</Typography>
+            <Typography variant="h6">{t("noProducts")}</Typography>
           </Box>
         ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "space-between",
-              gap: 2,
-            }}
-          >
+          <Box sx={favoriteItemStyle}>
             {favoriteData.map((product) => (
               <Box
                 key={product._id}

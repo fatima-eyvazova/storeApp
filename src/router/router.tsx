@@ -57,7 +57,11 @@ const router = createBrowserRouter([
   },
   {
     path: ROUTES.favorites,
-    element: <Favorites />,
+    element: (
+      <InnerRouteGuard isClient={true}>
+        <Favorites />
+      </InnerRouteGuard>
+    ),
   },
   {
     path: ROUTES.shop,
@@ -103,7 +107,11 @@ const router = createBrowserRouter([
   },
   {
     path: ROUTES.basket,
-    element: <Basket />,
+    element: (
+      <InnerRouteGuard isClient={true}>
+        <Basket />
+      </InnerRouteGuard>
+    ),
   },
   {
     path: "*",

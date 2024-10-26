@@ -1,5 +1,4 @@
 import { useState } from "react";
-import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,20 +18,21 @@ import { useLoginUserMutation } from "../../../../../redux/slices/shared/apiSlic
 import { loginUser } from "../../../../../redux/slices/shared/authSlice";
 import { Profile } from "../../../../../redux/types";
 import MainLayout from "../../../components/shared/MainLayout/MainLayout";
+import { useTranslation } from "react-i18next";
+import { useLoginSchema } from "../../../../../validationSchema/login";
+import {
+  accountInfo,
+  containerStyle,
+  linkStyle,
+  loginBox,
+} from "../../../../../constants";
 
 const Login = () => {
+  const { t } = useTranslation();
   const [err, setErr] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const schema = Yup.object({
-    email: Yup.string()
-      .email("Bu e-poçt olmalıdır")
-      .required("E-poçt tələb olunur"),
-    password: Yup.string()
-      .required("Parol tələb olunur")
-      .min(6, "Parol 6 simvoldan ibarət olmalıdır"),
-  }).required();
+  const schema = useLoginSchema();
 
   const {
     register,
@@ -66,70 +66,37 @@ const Login = () => {
         setErr(data.message);
       }
     } catch (error) {
-      setErr("Giriş sırasında bir hata oluştu.");
+      setErr(t("error"));
     }
   };
 
   return (
     <MainLayout>
-      <Box
-        sx={{
-          mt: 5,
-          width: "100vw",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "60px",
-        }}
-      >
+      <Box sx={containerStyle}>
         <Box mb={3}>
-          <Typography variant="h4">Account</Typography>
+          <Typography variant="h4">{t("account")}</Typography>
           <List style={{ display: "flex", listStyle: "none" }}>
             <ListItem>
               <Link to="/" style={{ textDecoration: "none" }}>
-                Home
+                {t("homeLogin")}
               </Link>
-              <IoIosArrowForward className="row-icon" />
+              <IoIosArrowForward />
             </ListItem>
             <ListItem>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: "#26c6d0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                Account
+              <Typography variant="body1" sx={accountInfo}>
+                {t("account")}
               </Typography>
             </ListItem>
           </List>
         </Box>
         <Box>
-          <Box
-            sx={{
-              mb: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-            }}
-          >
-            <Link
-              to={ROUTES.login}
-              style={{
-                color: "#26c6d0",
-                textDecoration: "none",
-                fontWeight: "bold",
-              }}
-            >
+          <Box sx={loginBox}>
+            <Link to={ROUTES.login} style={linkStyle}>
               <Typography
                 variant="h6"
                 sx={{ fontWeight: "bold", fontSize: "23px" }}
               >
-                Log in
+                {t("login")}
               </Typography>
             </Link>
             <Link
@@ -143,7 +110,7 @@ const Login = () => {
                 variant="h6"
                 sx={{ fontWeight: "bold", fontSize: "23px" }}
               >
-                | Register
+                | {t("register")}
               </Typography>
             </Link>
           </Box>
@@ -151,7 +118,7 @@ const Login = () => {
             <Box>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
-                  label="Email"
+                  label={t("email")}
                   type="email"
                   fullWidth
                   margin="normal"
@@ -160,7 +127,7 @@ const Login = () => {
                   helperText={errors.email?.message}
                 />
                 <TextField
-                  label="Password"
+                  label={t("password")}
                   type="password"
                   fullWidth
                   margin="normal"
@@ -169,7 +136,7 @@ const Login = () => {
                   helperText={errors.password?.message}
                 />
                 {err && <Typography color="error">{err}</Typography>}
-                <Box className="button-box" mt={2}>
+                <Box mt={2}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -177,7 +144,7 @@ const Login = () => {
                     fullWidth
                     disabled={!isValid || isLoading || !isDirty}
                   >
-                    {isLoading ? "Loading..." : "Sign In"}
+                    {isLoading ? t("loading") : t("signIn")}
                   </Button>
                 </Box>
               </form>
