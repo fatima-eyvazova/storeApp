@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, TextField, Typography } from "@mui/material";
 import { FaStar } from "react-icons/fa";
 import { Box } from "@mui/system";
+import { useTranslation } from "react-i18next";
 
 interface FeedbackFormProps {
   onSubmit: (rating: number, review: string) => Promise<void>;
@@ -12,6 +13,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onSubmit,
   isPurchased,
 }) => {
+  const { t } = useTranslation();
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
 
@@ -44,7 +46,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     >
       <form onSubmit={handleSubmit}>
         <Typography variant="h6" gutterBottom>
-          Give Your Feedback
+          {t("feedbackFormTitle")}
         </Typography>
         <Box sx={{ display: "flex", cursor: "pointer", mb: 2 }}>
           {stars.map((index) => (
@@ -60,34 +62,34 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
           ))}
         </Box>
         <TextField
-          label="Review"
+          label={t("review")}
           value={review}
           onChange={(e) => setReview(e.target.value)}
           multiline
           rows={4}
           sx={{
             mb: 2,
-            width: "100%", // Full width for the text field
+            width: "100%",
             "& .MuiOutlinedInput-root": {
               borderRadius: 1,
             },
           }}
-          variant="outlined" // Outlined variant for a cleaner look
+          variant="outlined"
         />
         <Button
           variant="contained"
           color="primary"
           type="submit"
           sx={{
-            textTransform: "none", // Remove uppercase transformation
+            textTransform: "none",
             borderRadius: 1,
             padding: "10px 20px",
             "&:hover": {
-              backgroundColor: "#0056b3", // Darken color on hover
+              backgroundColor: "#0056b3",
             },
           }}
         >
-          Submit Review
+          {t("submit")}
         </Button>
       </form>
     </Box>

@@ -7,20 +7,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useDeleteCategoryMutation } from "../../../../redux/slices/shared/apiSlice";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/types";
 
-interface Props {
-  setOpenModal: (bool: boolean) => void;
-  itemId?: string;
-  itemIdList?: string[];
-  resource: string;
-  setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { Props } from "./types";
 
 const DeleteModal = ({ setOpenModal, itemId, itemIdList }: Props) => {
-  const token = useSelector((state: RootState) => state.auth.token);
-
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const deleteItem = async () => {
@@ -54,6 +44,9 @@ const DeleteModal = ({ setOpenModal, itemId, itemIdList }: Props) => {
     }
   };
 
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   return (
     <Dialog open={true} onClose={() => setOpenModal(false)}>
       <DialogTitle>{itemId ? "Delete Item" : "Delete Items"}</DialogTitle>
@@ -72,7 +65,7 @@ const DeleteModal = ({ setOpenModal, itemId, itemIdList }: Props) => {
         >
           OK
         </Button>
-        <Button onClick={() => setOpenModal(false)} color="secondary">
+        <Button onClick={handleCloseModal} color="secondary">
           Cancel
         </Button>
       </DialogActions>

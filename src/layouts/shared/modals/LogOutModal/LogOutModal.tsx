@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../../redux/slices/shared/authSlice";
 import { ROUTES } from "../../../../router/routeNames";
+import {
+  logOutButton,
+  logOutModalBox,
+  logOutModalButton,
+} from "../../../../constants";
 
 interface Props {
   setOpenModal: (bool: boolean) => void;
@@ -18,45 +23,26 @@ const LogOutModal = ({ setOpenModal }: Props) => {
     navigate(ROUTES.login);
   };
 
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        bgcolor: "background.paper",
-        boxShadow: 24,
-        p: 4,
-        width: "300px",
-        zIndex: "10001",
-        borderRadius: 2,
-        textAlign: "center",
-      }}
-    >
+    <Box sx={logOutModalBox}>
       <IconButton
         aria-label="close"
-        onClick={() => setOpenModal(false)}
-        sx={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-        }}
+        onClick={handleCloseModal}
+        sx={logOutModalButton}
       >
         <CloseIcon />
       </IconButton>
       <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
         Are you sure you want to log out?
       </Typography>
-      <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
+      <Box sx={logOutButton}>
         <Button variant="contained" color="primary" onClick={logOut}>
           OK
         </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => setOpenModal(false)}
-        >
+        <Button variant="outlined" color="secondary" onClick={handleCloseModal}>
           Cancel
         </Button>
       </Box>

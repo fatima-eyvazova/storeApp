@@ -1,5 +1,3 @@
-import React from "react";
-// mui
 import TableCell from "@mui/material/TableCell";
 import {
   TableHead,
@@ -11,14 +9,8 @@ import {
 } from "@mui/material";
 
 import CategoryItem from "../CategoryItem/CategoryItem";
-
-interface Props {
-  list: [];
-  setOpen: (bool: boolean) => void;
-  setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedItems: string[];
-  setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>;
-}
+import { tableCellStyle } from "../../../../../constants";
+import { CategoryProps } from "../../../pages/CategoryDashboard/types";
 
 const CategoryTable = ({
   list,
@@ -26,7 +18,7 @@ const CategoryTable = ({
   setUpdateList,
   selectedItems,
   setSelectedItems,
-}: Props) => {
+}: CategoryProps) => {
   const handleCheckboxChange = (itemId: string) => {
     const updatedSelectedItems = selectedItems.includes(itemId)
       ? selectedItems.filter((id) => id !== itemId)
@@ -35,71 +27,41 @@ const CategoryTable = ({
     setSelectedItems(updatedSelectedItems);
   };
 
-  function selectCheckboxes() {
+  const selectCheckboxes = () => {
     if (selectedItems.length === list.length) {
       setSelectedItems([]);
     } else {
       const allItemIds = list.map((item) => item._id);
       setSelectedItems(allItemIds);
     }
-  }
+  };
+  const listArr = Array.isArray(list);
+  const isChecked = selectedItems.length === list.length;
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
-            <TableCell
-              sx={{
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: "bold",
-                minWidth: "120px",
-              }}
-            >
+            <TableCell sx={tableCellStyle}>
               <Checkbox
                 style={{ backgroundColor: "white" }}
-                checked={selectedItems.length === list.length}
-                onChange={() => {
-                  selectCheckboxes();
-                }}
+                checked={isChecked}
+                onChange={selectCheckboxes}
               />
             </TableCell>
-            <TableCell
-              align="left"
-              sx={{
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: "bold",
-                minWidth: "120px",
-              }}
-            >
+            <TableCell align="left" sx={tableCellStyle}>
               Icon
             </TableCell>
-            <TableCell
-              align="left"
-              sx={{
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: "bold",
-                minWidth: "120px",
-              }}
-            >
+            <TableCell align="left" sx={tableCellStyle}>
               Name
             </TableCell>
-            <TableCell
-              align="left"
-              sx={{
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: "bold",
-                minWidth: "120px",
-              }}
-            >
+            <TableCell align="left" sx={tableCellStyle}>
               Actions
             </TableCell>
           </TableRow>
         </TableHead>
-        {Array.isArray(list)
+        {listArr
           ? list.map((item) => (
               <CategoryItem
                 key={item?._id}

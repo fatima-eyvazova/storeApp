@@ -64,7 +64,6 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
       if (values.image[0] && typeof values.image[0] !== "string") {
         imgBase64 = (await getBase64(values.image[0] as File)) as string;
       }
-      console.log("itemData.item", itemData.item);
 
       if (!itemData.item) {
         const res = await addCategory({ name: values.name, image: imgBase64 });

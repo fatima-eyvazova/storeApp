@@ -1,6 +1,4 @@
-import React from "react";
-// mui
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import {
   TableHead,
   TableFooter,
@@ -12,119 +10,67 @@ import {
   Paper,
 } from "@mui/material";
 
-import { styled } from "@mui/material/styles";
-
-// react icons
-
 import ProductsItem from "../../../../dashboard/components/Products/ProductsItem/ProductsItem";
-import { GetProductItem } from "../../../pages/ProductsDashboard/types";
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-    fontWeight: "bold",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-  minWidth: "120px",
-}));
-
-type Props = {
-  list: GetProductItem[];
-  refetch: () => void;
-  selectedBrand: string;
-  selectedItems: string[];
-  setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>;
-  totalCount: number;
-  page: number;
-  perPage: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-  setPerPage: React.Dispatch<React.SetStateAction<number>>;
-  setOpen: (bool: boolean) => void;
-  setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
-};
+import { PropsProductsTable } from "../../../pages/ProductsDashboard/types";
+import { tableCellStyles } from "../../../../../constants";
 
 const ProductsTable = ({
   list,
-  selectedBrand,
   selectedItems,
-  setUpdateList,
-  setSelectedItems,
   totalCount,
   page,
   perPage,
-  setPage,
-  setPerPage,
   setOpen,
-  refetch,
   onDeleteProduct,
-}: Props) => {
-  const handleCheckboxChange = (itemId: string) => {
-    const updatedSelectedItems = selectedItems.includes(itemId)
-      ? selectedItems.filter((id) => id !== itemId)
-      : [...selectedItems, itemId];
-
-    setSelectedItems(updatedSelectedItems);
+  handleCheckboxChange,
+  selectCheckboxes,
+  handleChangePage,
+  handleChangeRowsPerPage,
+  setUpdateList,
+  categories,
+}: PropsProductsTable) => {
+  const listArr = Array.isArray(list);
+  const handleSelectAll = () => {
+    selectCheckboxes();
   };
-
-  function selectCheckboxes() {
-    if (selectedItems?.length === list?.length) {
-      setSelectedItems([]);
-    } else {
-      const allItemIds = list.map((item) => item._id);
-      setSelectedItems(allItemIds);
-    }
-  }
-
-  const filteredList = selectedBrand
-    ? list.filter((item) => item.brandId === selectedBrand)
-    : list;
-
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-    refetch();
-  };
-
-  const paginatedList = filteredList.slice(
-    page * perPage,
-    page * perPage + perPage
-  );
-
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>
+            <TableCell sx={tableCellStyles.head}>
               <Checkbox
                 style={{ backgroundColor: "white" }}
                 checked={selectedItems?.length === list?.length}
-                onChange={() => {
-                  selectCheckboxes();
-                }}
+                onChange={handleSelectAll}
               />
-            </StyledTableCell>
-            <StyledTableCell align="left">Product Name</StyledTableCell>
-            <StyledTableCell align="left">Brand</StyledTableCell>
-            <StyledTableCell align="left">Price</StyledTableCell>
-            <StyledTableCell align="left">Sale Price</StyledTableCell>
-            <StyledTableCell align="left">Stock</StyledTableCell>
-            <StyledTableCell align="left">View</StyledTableCell>
-            <StyledTableCell align="left">Published</StyledTableCell>
-            <StyledTableCell align="left">Actions</StyledTableCell>
+            </TableCell>
+            <TableCell sx={tableCellStyles.head}>Product Name</TableCell>
+            <TableCell sx={tableCellStyles.head} align="left">
+              Category
+            </TableCell>
+            <TableCell sx={tableCellStyles.head} align="left">
+              Price
+            </TableCell>
+            <TableCell sx={tableCellStyles.head} align="left">
+              Sale Price
+            </TableCell>
+            <TableCell sx={tableCellStyles.head} align="left">
+              Stock
+            </TableCell>
+            <TableCell sx={tableCellStyles.head} align="left">
+              View
+            </TableCell>
+            <TableCell sx={tableCellStyles.head} align="left">
+              Published
+            </TableCell>
+            <TableCell sx={tableCellStyles.head} align="left">
+              Actions
+            </TableCell>
           </TableRow>
         </TableHead>
-        {Array.isArray(filteredList)
-          ? filteredList.map((item) => (
+        {listArr
+          ? list.map((item) => (
               <ProductsItem
                 setOpen={setOpen}
                 key={item?._id}
@@ -133,6 +79,7 @@ const ProductsTable = ({
                 handleCheckboxChange={handleCheckboxChange}
                 setUpdateList={setUpdateList}
                 onDeleteProduct={onDeleteProduct}
+                categories={categories}
               />
             ))
           : []}

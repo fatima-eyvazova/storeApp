@@ -1,310 +1,231 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Box,
   Typography,
   TextField,
   Button,
   TextareaAutosize,
-  InputLabel,
-  FormControl,
-  Select,
-  MenuItem,
   Switch,
+  MenuItem,
 } from "@mui/material";
-import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  useGetCategoriesQuery,
-  useAddProductMutation,
-  useUpdateProductMutation,
-} from "../../../../../redux/slices/shared/apiSlice";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/types";
-import { selectItem } from "../../../../../redux/slices/dashboard/selectedItemSlice";
-import { getBase64 } from "../../../../../utils/convertToBase64";
+import { schema } from "../../../../../validationSchema/addProductForm";
+import { PropsAddProduct } from "../../../pages/ProductsDashboard/types";
+import {
+  deleteButtonStyle,
+  formStyles,
+  titleStyle,
+} from "../../../../../constants";
 
-interface Props {
-  setOpen: (bool: boolean) => void;
-  setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const AddProduct = ({ setOpen, setUpdateList }: Props) => {
-  const [err, setErr] = useState("");
-  const [imgList, setImgList] = useState<FileList | null>(null);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const dispatch = useDispatch();
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMWViYzM5MC03Y2EwLTExZWYtODYwMS01YmFjMGM4NWMzYmEiLCJpYXQiOjE3MjgyMjE4NTcsImV4cCI6MTcyODMwODI1N30.SwVg2Bsw2oX5J4EKSb8vUUa9elrPFrv4JZArMrL5DZY";
+const AddProduct = ({
+  categoriesListData,
+  selectedImages,
+  err,
+  setErr,
+  handleFormSubmit,
+  setSelectedImages,
+}: PropsAddProduct) => {
   const itemData = useSelector(
     (state: RootState) => state.selectedItem.itemData
   );
   const item = itemData?.item;
 
-  const { data: categoriesListData } = useGetCategoriesQuery(token);
-
-  const [addProduct] = useAddProductMutation();
-  const [updateProduct] = useUpdateProductMutation();
-
-  const schema = Yup.object({
-    title: Yup.string().required("Produktun adı tələb olunur"),
-    description: Yup.string().required("Produktun təsviri tələb olunur"),
-    salePrice: Yup.number().required("Produktun satış qiyməti tələb olunur"),
-    productPrice: Yup.number().required(
-      "Produktun əvvəlki qiyməti tələb olunur"
-    ),
-    brandId: Yup.string().required("Produktun brendi tələb olunur"),
-    stock: Yup.number().required(
-      "Produktun hazırda stokda olan sayı tələb olunur"
-    ),
-    images: Yup.mixed().test(
-      "fileCount",
-      "Minimum iki şəkil tələb olunur",
-      (value) => value && value.length >= 2
-    ),
-    isPublish: Yup.boolean().required(),
-  }).required();
-
-  useEffect(() => {
-    return () => {
-      dispatch(selectItem({ itemData: { item: null, status: "" } }));
-    };
-  }, [dispatch]);
-
-  const imagesList = item?.images || [];
-
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid, isLoading, isDirty },
   } = useForm({
     defaultValues: {
       title: item?.title || "",
       description: item?.description || "",
-      brandId: item?.brandId || "",
-      salePrice: item?.salePrice || 0,
-      productPrice: item?.productPrice || 0,
-      stock: item?.stock || 0,
-      images: imagesList || [],
+      categoryId: item?.categoryId || "",
+      stock: item?.stock || "",
+      images: item?.images || [],
+      salePrice: item?.salePrice || "",
+      productPrice: item?.productPrice || "",
       isPublish: item?.isPublish || false,
     },
-    // mode: "onChange",
-    mode: "onBlur",
+    mode: "onChange",
     resolver: yupResolver(schema),
   });
 
-  const handleFormSubmit = async (values: any) => {
-    console.log("Form values:", values);
+  const handleDeleteImage = async (index: number) => {
     try {
-      const base64ImgList = await Promise.all(
-        Array.from(values.images).map((image: File) =>
-          image?.public_id ? Promise.resolve(image) : getBase64(image)
-        )
-      );
+      const updatedImages = selectedImages.filter((_, i) => i !== index);
+      setSelectedImages(updatedImages);
+      setValue("images", updatedImages);
+    } catch (error) {
+      console.error("An error occurred while deleting the image:", error);
+    }
+  };
 
-      const body = {
-        ...values,
-        images: base64ImgList,
+  const handleImageChange = (event: {
+    target: { files: Iterable<unknown> | ArrayLike<unknown> };
+  }) => {
+    const files = Array.from(event.target.files);
+    const imageUrls = files.map((file) => {
+      return {
+        url: URL.createObjectURL(file),
+        public_id: null,
       };
-
-      if (item) {
-        await updateProduct({ id: item._id, body }).unwrap();
-      } else {
-        await addProduct(body).unwrap();
-      }
-
-      setErr("");
-      setOpen(false);
-      setUpdateList((prev) => !prev);
-    } catch (error: any) {
-      setErr(error?.data?.message || "Bir hata oluşdu.");
-    }
+    });
+    setSelectedImages([...selectedImages, ...imageUrls]);
+    setValue("images", [...selectedImages, ...files]);
+    setErr("");
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const imagesArray = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      setSelectedImages((prev) => [...prev, ...imagesArray]);
-      setValue("images", [
-        ...imagesList,
-        ...Array.from(files),
-      ] as unknown as File[]);
-      setImgList(files);
+  useEffect(() => {
+    if (item?.images && item?.images.length > 0) {
+      const imageUrls = item?.images.map((img) => {
+        return { url: img.url, public_id: img.public_id };
+      });
+      console.log({ imageUrls });
+
+      setSelectedImages(imageUrls);
+      setValue("images", imageUrls);
     }
-  };
+    if (item?.categoryId) {
+      setValue("categoryId", item?.categoryId);
+    }
+  }, [item, setValue]);
+
+  const isBtnDisabled =
+    !isValid || isLoading || (!isDirty && itemData?.status !== "edit");
 
   return (
     <Box style={{ padding: "50px", width: "40vw" }}>
-      <Typography
-        variant="h4"
-        style={{
-          paddingBottom: "10px",
-          fontFamily: "serif",
-          fontSize: "24px",
-          fontWeight: "600",
-          color: "blue",
-        }}
-      >
-        Məhsul əlavə et
+      <Typography variant="h4" sx={titleStyle}>
+        {itemData?.status === "edit" ? "Update" : "Add"} Product
       </Typography>
-      <Typography style={{ fontFamily: "sans-serif", fontSize: "16px" }}>
-        Buradan məhsul məlumatlarınızı əlavə edin
+      <Typography style={{ fontSize: "16px" }}>
+        Add your product and necessary information from here
       </Typography>
-      <form
-        style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-        onSubmit={handleSubmit(handleFormSubmit)}
-      >
+      <form onSubmit={handleSubmit(handleFormSubmit)} sx={formStyles}>
         <TextField
-          label="Brend adı"
+          label="Product Title"
           variant="outlined"
           fullWidth
-          margin="normal"
           {...register("title")}
-          error={!!errors.title}
-          helperText={errors.title?.message}
         />
-
+        {errors.title?.message && (
+          <p style={{ color: "red" }}>{errors.title?.message}</p>
+        )}
         <TextareaAutosize
-          placeholder="Məhsul təsviri"
           minRows={4}
-          style={{ width: "100%", padding: "8px", overflow: "hidden" }}
+          placeholder="Description"
+          style={{ width: "100%", padding: "14px" }}
           {...register("description")}
         />
-        {errors.description && (
-          <p style={{ color: "red" }}>{errors.description.message}</p>
+        {errors.description?.message && (
+          <p style={{ color: "red" }}>{errors.description?.message}</p>
         )}
-
-        <input
-          type="file"
-          id="images-file-upload"
-          accept="image/*"
-          multiple
-          style={{ display: "none" }}
-          onChange={handleImageChange}
-        />
-        <label
-          htmlFor="images-file-upload"
-          style={{
-            width: "130px",
-            padding: "14px",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            textAlign: "center",
-            display: "inline-block",
-          }}
-        >
-          Şəkil yüklə
-        </label>
-
-        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
-          {imagesList.map((image, index) => (
-            <img
-              key={`${image.public_id}-${index}`}
-              alt="product"
-              style={{ width: 50, height: 50, objectFit: "cover" }}
-              src={image.url}
-            />
-          ))}
-          {selectedImages.map((image, index) => (
-            <img
-              key={`uploaded-${index}`}
-              alt={`uploaded-${index}`}
-              style={{ width: 50, height: 50, objectFit: "cover" }}
-              src={image}
-            />
-          ))}
-        </div>
-
-        {errors.images && (
-          <p style={{ color: "red" }}>{errors.images.message}</p>
-        )}
-
-        <FormControl fullWidth variant="outlined" margin="normal" required>
-          <InputLabel id="brand-label">Category</InputLabel>
-          <Select
-            label="Category"
-            labelId="category-label"
-            {...register("brandId")}
-            defaultValue={item?.brandId}
-          >
-            {categoriesListData?.data?.map((category) => (
-              <MenuItem key={category?._id} value={category?._id}>
-                {category?.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {errors.brandId && (
-          <p style={{ color: "red" }}>{errors.brandId.message}</p>
-        )}
-
-        <InputLabel id="original-price-label">Məhsulun qiyməti</InputLabel>
         <TextField
-          type="number"
-          placeholder="Əvvəlki qiymət"
+          label="Sale Price"
           variant="outlined"
-          margin="normal"
-          fullWidth
-          required
-          {...register("productPrice")}
-          error={!!errors.productPrice}
-          helperText={errors.productPrice?.message}
-        />
-
-        <InputLabel id="sale-price-label">Məhsulun satış qiyməti</InputLabel>
-        <TextField
           type="number"
-          placeholder="Satış qiyməti"
-          variant="outlined"
-          margin="normal"
           fullWidth
-          required
           {...register("salePrice")}
-          error={!!errors.salePrice}
-          helperText={errors.salePrice?.message}
         />
-
-        <InputLabel id="stock-label">Stok</InputLabel>
+        {errors.salePrice?.message && (
+          <p style={{ color: "red" }}>{errors.salePrice?.message}</p>
+        )}
         <TextField
-          type="number"
-          placeholder="Stok"
+          label="Product Price"
           variant="outlined"
-          margin="normal"
+          type="number"
           fullWidth
-          required
-          {...register("stock")}
-          error={!!errors.stock}
-          helperText={errors.stock?.message}
+          {...register("productPrice")}
         />
+        {errors.productPrice?.message && (
+          <p style={{ color: "red" }}>{errors.productPrice?.message}</p>
+        )}
+        <TextField
+          label="Stock"
+          variant="outlined"
+          type="number"
+          fullWidth
+          {...register("stock")}
+        />
+        {errors.stock?.message && (
+          <p style={{ color: "red" }}>{errors.stock?.message}</p>
+        )}
 
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <TextField
+          label="Category"
+          variant="outlined"
+          select
+          fullWidth
+          {...register("categoryId")}
+        >
+          {categoriesListData?.data.map((category) => (
+            <MenuItem key={category._id} value={category._id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        {errors.categoryId?.message && (
+          <p style={{ color: "red" }}>{errors.categoryId?.message}</p>
+        )}
+        <div>
+          <input
+            id="images-file-upload"
+            type="file"
+            multiple
+            style={{ display: "none" }}
+            onChange={handleImageChange}
+          />
+          <label
+            htmlFor="images-file-upload"
+            style={{
+              padding: "14px",
+              backgroundColor: "#4CAF50",
+              color: "white",
+              cursor: "pointer",
+            }}
+          >
+            Upload Images
+          </label>
+          {errors.images?.message && (
+            <p style={{ color: "red" }}>{errors.images?.message}</p>
+          )}
+
+          {selectedImages.map((url, index) => (
+            <Box key={index} position="relative">
+              <img
+                src={url.url}
+                alt={`Product ${index}`}
+                style={{ height: 100, margin: "5px" }}
+              />
+              <Button
+                size="small"
+                variant="contained"
+                color="secondary"
+                onClick={() => handleDeleteImage(index, url)}
+                sx={deleteButtonStyle}
+              >
+                Delete
+              </Button>
+            </Box>
+          ))}
+
+          {err && <p style={{ color: "red" }}>{err}</p>}
           <Switch
             {...register("isPublish")}
             defaultChecked={item?.isPublish || false}
             color="primary"
           />
-          <Typography style={{ paddingLeft: "5px" }}>
-            Məhsulu dərc et
-          </Typography>
         </div>
-
-        {err && <p style={{ color: "red" }}>{err}</p>}
-
         <Button
           variant="contained"
           color="primary"
           type="submit"
-          disabled={!isValid || !isDirty}
+          disabled={isBtnDisabled}
         >
-          Yadda saxla
+          {itemData?.status === "edit" ? "Update Product" : "Add Product"}
         </Button>
       </form>
     </Box>

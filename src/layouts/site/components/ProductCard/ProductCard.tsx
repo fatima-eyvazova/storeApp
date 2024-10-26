@@ -1,80 +1,167 @@
-import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
-import { Link } from "react-router-dom";
-import { useAddRemoveFavoriteMutation } from "../../../../redux/slices/shared/apiSlice";
+import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { useSelector } from "react-redux";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import { useNavigate } from "react-router-dom";
+import {
+  BasketProduct,
+  GetProductItem,
+  RootState,
+} from "../../../../redux/types";
+import {
+  useAddNewBasketItemMutation,
+  useAddRemoveFavoriteMutation,
+  useGetBasketItemsQuery,
+} from "../../../../redux/slices/shared/apiSlice";
+import { useState } from "react";
+import {
+  basketButtonStyles,
+  heartIconContainerStyles,
+  productCardStyles,
+  productImageStyles,
+  productInfo,
+  productPriceCartStyles,
+  productPriceInfo,
+  productTitle,
+} from "../../../../constants";
 
-const ProductCard = ({ product }) => {
-  const {
-    _id: id,
-    title,
-    description,
-    productPrice,
-    salePrice,
-    stock,
-    images,
-  } = product;
+type Props = {
+  product: GetProductItem;
+  basketItem?: BasketProduct[];
+  favs: GetProductItem[];
+  refetchFavorites: () => void;
+  key: string;
+};
 
-  const [addRemoveFavorite, result] = useAddRemoveFavoriteMutation();
+const ProductCard = ({ product, favs }: Props) => {
+  const { _id: id, title, productPrice, salePrice, images, stock } = product;
+  const { token, user } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+  const [localQuantity, setLocalQuantity] = useState(1);
+  console.log("isProductInStock", stock);
 
-  const handleFavoriteClick = (e) => {
+  const [addToBasket] = useAddNewBasketItemMutation();
+  const rating = product?.rating;
+  const { data: dbBasketList } = useGetBasketItemsQuery({});
+  console.log("dbBasketList", dbBasketList);
+
+  const [addRemoveFavorite, { isLoading }] = useAddRemoveFavoriteMutation();
+
+  const favorite = favs?.find((pr) => pr?._id === product?._id);
+  const [isFavorite, setIsFavorite] = useState(favorite);
+
+  const handleAddToBasket = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    if (token && user?.role === "client") {
+      try {
+        await addToBasket({
+          userId: user?._id,
+          productId: id,
+          productCount: localQuantity,
+        });
+        console.log("productCount", localQuantity);
+
+        setLocalQuantity((prev) => prev + 1);
+      } catch (error) {
+        console.error("Basket update error:", error);
+      }
+    }
+  };
+
+  const handleClick = () => {
+    navigate(`/products/${id}`);
+  };
+
+  const handleFavoriteClick = (e: React.ChangeEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (!isClient) return;
+    setIsFavorite((prev) => !prev);
     addRemoveFavorite({
       product_id: id,
     });
   };
 
+  const calculateAverageRating = () => {
+    const { avgRating, overallRatingCount } = rating;
+    return overallRatingCount > 0 ? avgRating : 0;
+  };
+
+  const isClient = token && user?.role === "client";
+  const isProductInStock = stock > 0;
+
   return (
-    <>
-      <Link to={`/products/${id}`} className="product-card" key={id}>
-        <Card
-          sx={{
-            maxWidth: 345,
-            margin: "16px",
-            transition: "0.3s",
-            "&:hover": { boxShadow: 6 },
-          }}
-        >
-          <CardMedia
+    <Box onClick={handleClick} sx={productCardStyles} disabled={isLoading}>
+      <Box sx={{ overflow: "hidden", backgroundColor: "#fff" }}>
+        {images && images.length > 0 && (
+          <Box
             component="img"
-            height="200"
-            image={images && images.length > 0 ? images[0].url : ""}
-            alt={title}
-            sx={{ objectFit: "fit" }}
+            src={images[0].url}
+            alt="product-image"
+            sx={productImageStyles}
           />
-          <CardContent>
-            <Typography variant="h6" component="div" gutterBottom>
-              {title}
+        )}
+      </Box>
+
+      <Box sx={heartIconContainerStyles}>
+        <Box onClick={handleFavoriteClick} disabled={!isClient}>
+          {isFavorite ? (
+            <FaHeart
+              style={{
+                color: isClient ? "red" : "grey",
+                fontSize: 20,
+                cursor: isClient ? "pointer" : "not-allowed",
+              }}
+            />
+          ) : (
+            <FaRegHeart
+              style={{
+                color: isClient ? "black" : "grey",
+                fontSize: 20,
+                cursor: isClient ? "pointer" : "not-allowed",
+              }}
+            />
+          )}
+        </Box>
+
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="body2" sx={productInfo}>
+            {calculateAverageRating().toFixed(1)}
+            <FaStar style={{ color: "#ffc107" }} />
+          </Typography>
+        </Box>
+      </Box>
+
+      <Box sx={{ backgroundColor: "#fff", padding: "17px 20px 26px" }}>
+        <Typography variant="h6" sx={productTitle}>
+          {title}
+        </Typography>
+        <Box sx={productPriceCartStyles}>
+          <Box sx={productPriceInfo}>
+            <Typography variant="h6" sx={{ color: "red" }}>
+              ${productPrice}
             </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {description}
-            </Typography>
-            <Box display="flex" alignItems="center">
-              <Typography variant="h6" component="span" sx={{ mr: 1 }}>
-                ${productPrice}
+            {salePrice && (
+              <Typography
+                variant="body2"
+                sx={{ textDecoration: "line-through", color: "#454545" }}
+              >
+                ${salePrice}
               </Typography>
-              {salePrice < productPrice && (
-                <Typography
-                  variant="body2"
-                  color="red"
-                  sx={{ textDecoration: "line-through" }}
-                >
-                  ${salePrice}
-                </Typography>
-              )}
-            </Box>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ marginTop: 1 }}
-            >
-              {stock > 0 ? `Mövcuddur: ${stock}` : "Mövcud deyil"}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Link>
-      <div style={{ position: "absolute", bottom: 0, left: 0 }}>
-        <button onClick={handleFavoriteClick}>Favorite</button>
-      </div>
-    </>
+            )}
+          </Box>
+
+          <IconButton
+            onClick={handleAddToBasket}
+            sx={basketButtonStyles}
+            disabled={!isClient || !isProductInStock}
+          >
+            <HiOutlineShoppingBag />
+          </IconButton>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

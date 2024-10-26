@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   IconButton,
   TableCell,
@@ -11,52 +10,34 @@ import {
   RemoveCircleOutline,
   DeleteOutline,
 } from "@mui/icons-material";
+import { Props } from "../../page/Basket/type";
+import { basketImage } from "../../../../constants";
 
-type Props = {
-  product: {
-    _id: string;
-    quantity: number;
-    product: {
-      title: string;
-      salePrice: number;
-      subtotal: number;
-      images: { url: string }[];
-    };
-  };
-  onUpdate: (id: string, quantity: number) => void;
-  onRemove: (id: string) => void;
+type BasketItemProps = {
+  product: Props["product"];
+  basketItem: Props["basketItem"];
+  handleIncreaseQuantity: (productId: string, currentQuantity: number) => void;
+  handleDecreaseQuantity: (productId: string, currentQuantity: number) => void;
+  handleRemoveItem: (productId: string) => void;
 };
 
-const BasketItem = ({ product, basketItem, onUpdate, onRemove }: Props) => {
-  const [localQuantity, setLocalQuantity] = useState(basketItem?.productCount);
-  const [updating, setUpdating] = useState(false);
-  console.log("product", product);
-
-  const handleIncreaseQuantity = async () => {
-    setUpdating(true);
-    const newQuantity = localQuantity + 1;
-    setLocalQuantity(newQuantity);
-    await onUpdate(basketItem._id, newQuantity, product._id);
-    setUpdating(false);
-  };
-
-  const handleDecreaseQuantity = async () => {
-    if (localQuantity > 1) {
-      setUpdating(true);
-      const newQuantity = localQuantity - 1;
-      setLocalQuantity(newQuantity);
-      await onUpdate(product._id, newQuantity);
-      setUpdating(false);
-    } else {
-      await handleRemoveItem();
-    }
-  };
-
-  const handleRemoveItem = async () => {
-    await onRemove(product._id);
-  };
+const BasketItem = ({
+  product,
+  basketItem,
+  handleIncreaseQuantity,
+  handleDecreaseQuantity,
+  handleRemoveItem,
+}: BasketItemProps) => {
+  const { productCount, _id: productId } = basketItem;
 
   const image = product?.images[0]?.url;
+
+  if (productCount === 0) {
+    return null;
+  }
+  const onIncreaseClick = () => handleIncreaseQuantity(productId, productCount);
+  const onDecreaseClick = () => handleDecreaseQuantity(productId, productCount);
+  const onRemoveClick = () => handleRemoveItem(productId);
 
   return (
     <TableRow>
@@ -65,7 +46,7 @@ const BasketItem = ({ product, basketItem, onUpdate, onRemove }: Props) => {
           component="img"
           src={image}
           alt={product?.title}
-          sx={{ width: 100, height: 100, objectFit: "contain" }}
+          sx={basketImage}
         />
       </TableCell>
       <TableCell>
@@ -76,22 +57,22 @@ const BasketItem = ({ product, basketItem, onUpdate, onRemove }: Props) => {
       </TableCell>
       <TableCell>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton onClick={handleDecreaseQuantity}>
+          <IconButton onClick={onDecreaseClick}>
             <RemoveCircleOutline />
           </IconButton>
-          <Typography>{localQuantity}</Typography>
-          <IconButton onClick={handleIncreaseQuantity}>
+          <Typography>{productCount}</Typography>
+          <IconButton onClick={onIncreaseClick}>
             <AddCircleOutline />
           </IconButton>
         </Box>
       </TableCell>
-      {/* <TableCell>
-        <Typography>
-          ${(product?.salePrice * localQuantity).toFixed(2)}
-        </Typography>
-      </TableCell> */}
       <TableCell>
-        <IconButton onClick={handleRemoveItem}>
+        <Typography>
+          ${(product?.salePrice * productCount).toFixed(2)}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <IconButton onClick={onRemoveClick}>
           <DeleteOutline />
         </IconButton>
       </TableCell>

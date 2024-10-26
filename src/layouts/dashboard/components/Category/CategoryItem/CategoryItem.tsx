@@ -1,22 +1,17 @@
 import React, { useState } from "react";
-// import { GrView } from "react-icons/gr";
 import { BiPencil, BiTrash } from "react-icons/bi";
-// import { styled } from "@mui/material/styles";
 import {
   TableBody,
-  // tableCellClasses,
   TableRow,
   TableCell,
   Tooltip,
   IconButton,
   Grid,
   Checkbox,
-  // Modal,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { selectItem } from "../../../../../redux/slices/dashboard/selectedItemSlice";
 import DeleteModal from "../../../../shared/modals/DeleteModal/DeleteModal";
-// const label = { inputProps: { "aria-label": "Switch demo" } };
 
 interface Props {
   setOpen: (bool: boolean) => void;
@@ -32,9 +27,6 @@ const CategoryItem = ({
   selectedItems,
   handleCheckboxChange,
 }: Props) => {
-  // const [page, setPage] = React.useState(0);
-  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  // const [confirmOpen, setConfirmOpen] = useState(true);
   const [openModal, setOpenModal] = useState(false);
 
   const dispatch = useDispatch();
@@ -43,13 +35,18 @@ const CategoryItem = ({
     setOpen(true);
     dispatch(selectItem({ itemData: { item, status } }));
   };
+
+  const handleCheckboxChangeClick = () => handleCheckboxChange(item._id);
+  const handleEditClick = () => setSelectedItem("edit");
+  const handleDeleteClick = () => setOpenModal(true);
+  const selectedCheck = selectedItems.includes(item._id);
   return (
     <TableBody>
       <TableRow>
         <TableCell>
           <Checkbox
-            checked={selectedItems.includes(item._id)}
-            onChange={() => handleCheckboxChange(item._id)}
+            checked={selectedCheck}
+            onChange={handleCheckboxChangeClick}
           />
         </TableCell>
         <TableCell>
@@ -77,7 +74,7 @@ const CategoryItem = ({
 
         <TableCell>
           <Tooltip title="Edit" arrow>
-            <IconButton onClick={() => setSelectedItem("edit")}>
+            <IconButton onClick={handleEditClick}>
               <BiPencil
                 style={{
                   cursor: "pointer",
@@ -86,7 +83,7 @@ const CategoryItem = ({
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Delete" arrow onClick={() => setOpenModal(true)}>
+          <Tooltip title="Delete" arrow onClick={handleDeleteClick}>
             <IconButton>
               <BiTrash />
             </IconButton>

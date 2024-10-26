@@ -1,27 +1,20 @@
 import { Link } from "react-router-dom";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  InputBase,
-  Box,
-  Button,
-} from "@mui/material";
+import { Toolbar, Box, Button } from "@mui/material";
 import { ROUTES } from "../../../../../../router/routeNames";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ position: "static", backgroundColor: "black", color: "white" }}>
       <Toolbar
         sx={{
           width: "97vw",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center",
         }}
       >
-        <Typography variant="h6" component="div">
-          MyApp
-        </Typography>
         <Box
           sx={{
             display: "flex",
@@ -31,29 +24,18 @@ const Navbar = () => {
           }}
         >
           <Button component={Link} to={ROUTES.home} color="inherit">
-            Home
+            {t("home")}
           </Button>
-          <Button component={Link} to={ROUTES.products} color="inherit">
-            Products
+          <Button component={Link} to={ROUTES.shop} color="inherit">
+            {t("shop")}
           </Button>
-          <Button component={Link} to={`/${ROUTES.wishlist}`} color="inherit">
-            Favorites
+          <Button component={Link} to={ROUTES.favorites} color="inherit">
+            {t("favorites")}
           </Button>
-          <Button component={Link} to={`/${ROUTES.basket}`} color="inherit">
-            Basket
+          <Button component={Link} to={ROUTES.basket} color="inherit">
+            {t("basket")}
           </Button>
         </Box>
-        <InputBase
-          placeholder="Find a product…"
-          style={{
-            color: "inherit",
-            backgroundColor: "#fff",
-            borderRadius: "4px",
-            padding: "4px 8px",
-            marginRight: "16px",
-          }}
-          inputProps={{ "aria-label": "search" }}
-        />
       </Toolbar>
     </Box>
   );

@@ -10,6 +10,7 @@ import {
 import CategoryTable from "../../components/Category/CategoryTable/CategoryTable";
 import AddEditeCategory from "../../components/Category/AddEditeCategory/AddEditeCategory";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import { headerStyles } from "../../../../constants";
 
 const CategoryPage = () => {
   const [open, setOpen] = useState(false);
@@ -36,17 +37,11 @@ const CategoryPage = () => {
   if (isLoading) return <Typography>Loading...</Typography>;
   if (error) return <Typography>Error loading categories</Typography>;
 
+  const listData = data?.data || [];
   return (
     <Sidebar>
       <Box sx={{ padding: "20px" }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
+        <Box sx={headerStyles}>
           <Typography variant="h4" component="h1" sx={{ fontWeight: "bold" }}>
             Category
           </Typography>
@@ -73,7 +68,7 @@ const CategoryPage = () => {
         </Box>
 
         <CategoryTable
-          list={data?.data || []}
+          list={listData}
           setOpen={setOpen}
           selectedItems={selectedItems}
           setSelectedItems={setSelectedItems}

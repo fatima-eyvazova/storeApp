@@ -25,13 +25,13 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Category"],
+  tagTypes: ["Category", "Product", "Basket", "Profile"],
   endpoints: (builder) => ({
-    getCategories: builder.query<any, void>({
+    getCategories: builder.query<void, void>({
       query: () => "/dashboard/categories",
       providesTags: ["Category"],
     }),
-    addCategory: builder.mutation<any, { name: string; image: string }>({
+    addCategory: builder.mutation<void, { name: string; image: string }>({
       query: (category) => ({
         url: "/dashboard/categories",
         method: "POST",
@@ -40,7 +40,7 @@ export const apiSlice = createApi({
       invalidatesTags: ["Category"],
     }),
     updateCategory: builder.mutation<
-      any,
+      void,
       { id: string; name: string; image?: string }
     >({
       query: ({ id, ...body }) => ({
@@ -51,7 +51,7 @@ export const apiSlice = createApi({
       invalidatesTags: ["Category"],
     }),
 
-    deleteCategory: builder.mutation<any, string>({
+    deleteCategory: builder.mutation<void, string>({
       query: (id) => ({
         url: `/dashboard/categories/${id}`,
         method: "DELETE",
@@ -68,10 +68,17 @@ export const apiSlice = createApi({
           page + 1
         }${constructCategoryQuery}${searchQuery}`;
       },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.product.map(({ id }) => ({ type: "Product", id })),
+              { type: "Product", id: "LIST" },
+            ]
+          : [{ type: "Product", id: "LIST" }],
     }),
 
     addProduct: builder.mutation<
-      any,
+      void,
       { name: string; price: number; categoryId: string; image: string }
     >({
       query: (product) => ({
@@ -82,13 +89,13 @@ export const apiSlice = createApi({
       invalidatesTags: ["Product"],
     }),
     updateProduct: builder.mutation<
-      any,
+      void,
       {
         id: string;
         name: string;
         price: number;
         categoryId: string;
-        image?: string;
+        images?: { url: string; public_id: string }[];
       }
     >({
       query: ({ id, ...body }) => ({
@@ -98,7 +105,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Product"],
     }),
-    deleteProduct: builder.mutation<any, string>({
+    deleteProduct: builder.mutation<void, string>({
       query: (id) => ({
         url: `/dashboard/products/${id}`,
         method: "DELETE",
@@ -108,7 +115,11 @@ export const apiSlice = createApi({
 
     getSiteProducts: builder.query<GetProducts, void>({
       query: () => "/site/products?perPage=100",
-      providesTags: ["Product"], // Müvafiq tag əlavə olunur
+      providesTags: ["Product"],
+    }),
+
+    getProductReviews: builder.query({
+      query: (id) => `/site/products/${id}/reviews`,
     }),
 
     getProductById: builder.query<GetProductItem, string>({
@@ -158,13 +169,8 @@ export const apiSlice = createApi({
       }),
     }),
     getBasketItems: builder.query({
-      query: (token) => ({
-        url: "/site/basket",
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
+      query: () => "/site/basket",
+      providesTags: ["Basket"],
     }),
 
     removeBasketItem: builder.mutation({
@@ -176,18 +182,18 @@ export const apiSlice = createApi({
         },
       }),
     }),
-    updateBasketItem: builder.mutation({
-      query: ({ id, productId, productCount }) => ({
-        url: `/site/basket`,
-        method: "PUT",
-        body: { basket_id: id, productId, productCount },
-      }),
-    }),
+    // updateBasketItem: builder.mutation({
+    //   query: ({ id, productId, productCount }) => ({
+    //     url: `/site/basket`,
+    //     method: "PUT",
+    //     body: { basket_id: id, productId, productCount },
+    //   }),
+    // }),
     addNewBasketItem: builder.mutation({
-      query: ({ basket }) => ({
+      query: (basket) => ({
         url: `/site/basket`,
         method: "POST",
-        body: { basket },
+        body: basket,
       }),
     }),
 
@@ -248,6 +254,17 @@ export const apiSlice = createApi({
         body: feedbackData,
       }),
     }),
+
+    getSiteInfo: builder.query({
+      query: () => "/dashboard/site-info",
+    }),
+    updateSiteInfo: builder.mutation({
+      query: (siteInfo) => ({
+        url: "/dashboard/site-info",
+        method: "PUT",
+        body: siteInfo,
+      }),
+    }),
   }),
 });
 
@@ -272,9 +289,12 @@ export const {
   useGetSiteShopQuery,
   useGetBasketItemsQuery,
   useRemoveBasketItemMutation,
-  useUpdateBasketItemMutation,
+  // useUpdateBasketItemMutation,
   useGetOrdersQuery,
   useUpdateOrderStatusMutation,
   useCreateOrderMutation,
   useGiveFeedbackMutation,
+  useGetSiteInfoQuery,
+  useUpdateSiteInfoMutation,
+  useGetProductReviewsQuery,
 } = apiSlice;

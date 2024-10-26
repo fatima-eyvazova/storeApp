@@ -4,28 +4,17 @@ import {
   TableRow,
   TableCell,
   Avatar,
-  Switch,
   Tooltip,
   IconButton,
   Grid,
   Checkbox,
 } from "@mui/material";
 
-import { GetProductItem } from "../../../pages/ProductsDashboard/types";
+import { PropsItem } from "../../../pages/ProductsDashboard/types";
 import { useDispatch } from "react-redux";
 import { selectItem } from "../../../../../redux/slices/dashboard/selectedItemSlice";
-import DeleteModal from "../../../../shared/DeleteModal/DeleteModal";
+import DeleteModal from "../../../../shared/modals/DeleteModal/DeleteModal";
 import { useState } from "react";
-
-const label = { inputProps: { "aria-label": "Switch demo" } };
-
-type Props = {
-  item: GetProductItem;
-  selectedItems: string[];
-  handleCheckboxChange: (itemId: string) => void;
-  setOpen: (bool: boolean) => void;
-  setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
 const ProductsItem = ({
   item,
@@ -34,29 +23,36 @@ const ProductsItem = ({
   setUpdateList,
   setOpen,
   onDeleteProduct,
-}: Props) => {
+  categories,
+}: PropsItem) => {
   const dispatch = useDispatch();
   const url = item?.images?.[0] as { url: string };
   const [openModal, setOpenModal] = useState(false);
+  const categoryName =
+    categories?.data?.find(
+      (item: { id: string; categoryId: string }) => item.id === item.categoryId
+    )?.name || "Unknown";
 
   const setSelectedItem = (status: "edit" | "view" | "delete") => {
     setOpen(true);
     dispatch(selectItem({ itemData: { item, status } }));
   };
+  const isChecked = selectedItems.includes(item._id);
+
+  const handleCheckboxChangeLocal = () => handleCheckboxChange(item._id);
+
+  const handleEditItem = () => setSelectedItem("edit");
+
+  const handleDeleteModalOpen = () => setOpenModal(true);
 
   const handleDelete = () => {
     onDeleteProduct(item._id);
   };
 
-  console.log("item", item);
-
   return (
     <TableRow>
       <TableCell>
-        <Checkbox
-          checked={selectedItems.includes(item._id)}
-          onChange={() => handleCheckboxChange(item._id)}
-        />
+        <Checkbox checked={isChecked} onChange={handleCheckboxChangeLocal} />
       </TableCell>
       <TableCell>
         <Grid
@@ -70,23 +66,21 @@ const ProductsItem = ({
           <Grid item>{item?.title}</Grid>
         </Grid>
       </TableCell>
-      <TableCell>{item?.brandName}</TableCell>
+      <TableCell>{categoryName}</TableCell>
       <TableCell>{item?.productPrice}</TableCell>
       <TableCell>{item?.salePrice}</TableCell>
       <TableCell>{item?.stock}</TableCell>
       <TableCell style={{ cursor: "pointer" }}>
         <GrView />
       </TableCell>
+      <TableCell>{item?.isPublish ? "True" : "False"}</TableCell>
       <TableCell>
-        <Switch {...label} checked={item?.isPublish} />
-      </TableCell>
-      <TableCell>
-        <Tooltip title="Edit" arrow onClick={() => setSelectedItem("edit")}>
+        <Tooltip title="Edit" arrow onClick={handleEditItem}>
           <IconButton>
             <BiPencil />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Delete" arrow onClick={() => setOpenModal(true)}>
+        <Tooltip title="Delete" arrow onClick={handleDeleteModalOpen}>
           <IconButton onClick={handleDelete}>
             <BiTrash />
           </IconButton>
@@ -97,6 +91,7 @@ const ProductsItem = ({
             setUpdateList={setUpdateList}
             itemId={item._id}
             resource="products"
+            onDelete={handleDelete}
           />
         )}
       </TableCell>

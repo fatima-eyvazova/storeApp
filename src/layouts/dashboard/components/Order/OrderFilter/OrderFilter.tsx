@@ -1,4 +1,10 @@
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
+import {
+  containerStyle3,
+  dateFieldContainerStyle,
+  datePickerContainerStyle,
+  searchFieldContainerStyle,
+} from "../../../../../constants";
 
 interface Props {
   searchInput: string;
@@ -20,22 +26,21 @@ const OrderFilter = ({
     setSearchInput(e.target.value);
   };
 
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEndDate(e.target.value);
+  };
   return (
-    <Box
-      sx={{ backgroundColor: "#f5f5f5", padding: "20px", borderRadius: "8px" }}
-    >
+    <Box sx={containerStyle3}>
       <Box>
         <Typography variant="h4" component="h1" sx={{ marginBottom: "20px" }}>
           Orders
         </Typography>
         <Box component="form" sx={{ display: "flex", gap: "20px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: "50px",
-            }}
-          >
+          <Box sx={searchFieldContainerStyle}>
             <TextField
               label="Search name"
               variant="outlined"
@@ -45,33 +50,19 @@ const OrderFilter = ({
               sx={{ width: "300px" }}
             />
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              gap: "10px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
-              }}
-            >
+          <Box sx={dateFieldContainerStyle}>
+            <Box sx={datePickerContainerStyle}>
               <TextField
                 label="Start Date"
                 type="date"
                 InputLabelProps={{ shrink: true }}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={handleStartDateChange}
               />
               <TextField
                 label="End Date"
                 type="date"
                 InputLabelProps={{ shrink: true }}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={handleEndDateChange}
               />
             </Box>
           </Box>

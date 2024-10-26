@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
 import {
@@ -16,10 +15,12 @@ import {
   ListItem,
   ListItemIcon,
   IconButton,
-  Avatar,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -37,13 +38,18 @@ const Footer = () => {
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6} md={4}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar
-                src="/src/assets/images/logo.png"
-                alt="logo"
-                sx={{ width: 56, height: 56 }}
-              />
-              <Typography variant="h6" sx={{ ml: 2 }}>
-                Dilan
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "#ffffff",
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  letterSpacing: "0.2px",
+                  lineHeight: "22px",
+                  textTransform: "uppercase",
+                }}
+              >
+                {t("title")}
               </Typography>
             </Box>
             <Typography
@@ -54,48 +60,49 @@ const Footer = () => {
                 marginTop: "30px",
               }}
             >
-              Copyright © 2023
-              <Link
-                to="/"
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                  textTransform: "uppercase",
-                }}
-              >
-                dilan
-              </Link>
-              . <br /> All rights reserved.
+              {t("copyright")} © 2023
+            </Typography>
+            <Typography
+              sx={{
+                color: "#ffffff",
+                fontSize: 16,
+                fontWeight: "bold",
+                letterSpacing: "0.2px",
+                lineHeight: "22px",
+                textTransform: "uppercase",
+              }}
+            >
+              {t("allRightsReserved")}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={2}>
-            <Typography variant="h6">Information</Typography>
+            <Typography variant="h6">{t("information")}</Typography>
             <List>
-              <ListItem>Specials</ListItem>
-              <ListItem>New products</ListItem>
-              <ListItem>Top sellers</ListItem>
-              <ListItem>Our stores</ListItem>
-              <ListItem>Contact us</ListItem>
+              <ListItem>{t("specials")}</ListItem>
+              <ListItem>{t("newProducts")}</ListItem>
+              <ListItem>{t("topSellers")}</ListItem>
+              <ListItem>{t("ourStores")}</ListItem>
+              <ListItem>{t("contactUs")}</ListItem>
             </List>
           </Grid>
           <Grid item xs={12} sm={6} md={2}>
-            <Typography variant="h6">My Account</Typography>
+            <Typography variant="h6">{t("myAccount")}</Typography>
             <List>
-              <ListItem>My orders</ListItem>
-              <ListItem>My credit slips</ListItem>
-              <ListItem>My addresses</ListItem>
-              <ListItem>My personal info</ListItem>
-              <ListItem>My wishlist</ListItem>
+              <ListItem>{t("myOrders")}</ListItem>
+              <ListItem>{t("myCreditSlips")}</ListItem>
+              <ListItem>{t("myAddresses")}</ListItem>
+              <ListItem>{t("myPersonalInfo")}</ListItem>
+              <ListItem>{t("myWishlist")}</ListItem>
             </List>
           </Grid>
           <Grid item xs={12} sm={6} md={2}>
-            <Typography variant="h6">Quick Links</Typography>
+            <Typography variant="h6">{t("quickLinks")}</Typography>
             <List>
-              <ListItem>New User</ListItem>
-              <ListItem>Help Center</ListItem>
-              <ListItem>Refund Policy</ListItem>
-              <ListItem>Report Spam</ListItem>
-              <ListItem>FAQs</ListItem>
+              <ListItem>{t("newUser")}</ListItem>
+              <ListItem>{t("helpCenter")}</ListItem>
+              <ListItem>{t("refundPolicy")}</ListItem>
+              <ListItem>{t("reportSpam")}</ListItem>
+              <ListItem>{t("faqs")}</ListItem>
             </List>
           </Grid>
           <Grid item xs={12} sm={6} md={2}>
@@ -108,14 +115,14 @@ const Footer = () => {
                 flexDirection: "column",
               }}
             >
-              Contact Us
+              {t("contactUs")}
             </Typography>
             <List>
               <ListItem>
                 <ListItemIcon>
                   <IoHomeOutline />
                 </ListItemIcon>
-                <Typography>Your store address goes here</Typography>
+                <Typography>{t("storeAddress")}</Typography>
               </ListItem>
               <ListItem>
                 <ListItemIcon>
@@ -169,9 +176,6 @@ const Footer = () => {
                 </IconButton>
               </ListItem>
             </List>
-          </Grid>
-          <Grid item>
-            <img src="/src/assets/images/payment-img_298x.png" alt="payment" />
           </Grid>
         </Grid>
       </Box>
