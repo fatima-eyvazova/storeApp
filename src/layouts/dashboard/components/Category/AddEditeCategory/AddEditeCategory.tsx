@@ -11,6 +11,12 @@ import {
   useAddCategoryMutation,
   useUpdateCategoryMutation,
 } from "../../../../../redux/slices/shared/apiSlice";
+import {
+  categorieForm,
+  categorieFormLable,
+  categorieTypography,
+} from "../../../../../constants";
+import { schema } from "../../../../../validationSchema/addCategory";
 
 interface FormValues {
   name: string;
@@ -37,12 +43,6 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
 
   const [addCategory] = useAddCategoryMutation();
   const [updateCategory] = useUpdateCategoryMutation();
-  const schema = Yup.object({
-    name: Yup.string().required("Kateqoriyanınin adı tələb olunur"),
-    image: Yup.mixed<File[] | string>().required(
-      "Kateqoriyanınin şəkili tələb olunur"
-    ),
-  }).required();
 
   const {
     register,
@@ -94,6 +94,13 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const img = e.target.files as unknown as File[];
+    setValue("image", img);
+    setUrl(URL.createObjectURL(img?.[0]));
+    setErr("");
+  };
+
   useEffect(() => {
     if (item?.image?.url) {
       setUrl(item?.image?.url);
@@ -107,16 +114,7 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
   return (
     <Box style={{ padding: "50px", width: "40vw" }}>
       <Box>
-        <Typography
-          variant="h4"
-          style={{
-            paddingBottom: "10px",
-            fontFamily: "serif",
-            fontSize: "24px",
-            fontWeight: "600",
-            color: "blue",
-          }}
-        >
+        <Typography variant="h4" sx={categorieTypography}>
           {`${itemData?.status === "edit" ? "Update" : "Add"}`} Category
         </Typography>
         <Typography
@@ -128,10 +126,7 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
           Add your Product category and necessary information from here
         </Typography>
       </Box>
-      <form
-        style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-        onSubmit={handleSubmit(handleFormSubmit)}
-      >
+      <form style={categorieForm} onSubmit={handleSubmit(handleFormSubmit)}>
         <TextField
           label="Category Title/Name"
           variant="outlined"
@@ -142,33 +137,19 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
         {!!errors.name?.message && (
           <p style={{ color: "red" }}>{errors.name?.message}</p>
         )}
-        <div className="App">
-          <h2>Add Image:</h2>
+        <Box>
+          <Typography variant="h5" sx={{ marginBottom: 3 }}>
+            Add Image:
+          </Typography>
           <input
             id="images-file-upload"
             type="file"
             style={{ display: "none", width: "200px" }}
             size={fourMb}
             multiple={false}
-            onChange={(e) => {
-              const img = e.target.files as unknown as File[];
-              setValue("image", img);
-              setUrl(URL.createObjectURL(img?.[0]));
-              setErr("");
-            }}
+            onChange={handleImageChange}
           />
-          <label
-            htmlFor="images-file-upload"
-            style={{
-              width: "130px",
-              padding: "14px ",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
+          <label htmlFor="images-file-upload" style={categorieFormLable}>
             Upload Images
           </label>
 
@@ -179,7 +160,7 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
             <img src={url} alt="Category Image" style={{ height: 400 }} />
           )}
           {err && <p style={{ color: "red" }}>{err}</p>}
-        </div>
+        </Box>
         <Button
           style={{ marginTop: 20 }}
           variant="contained"

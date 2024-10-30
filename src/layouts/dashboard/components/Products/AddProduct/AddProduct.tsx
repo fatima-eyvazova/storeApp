@@ -17,6 +17,7 @@ import { PropsAddProduct } from "../../../pages/ProductsDashboard/types";
 import {
   deleteButtonStyle,
   formStyles,
+  productLable,
   titleStyle,
 } from "../../../../../constants";
 
@@ -62,6 +63,8 @@ const AddProduct = ({
       console.error("An error occurred while deleting the image:", error);
     }
   };
+  const getDeleteHandler = (index: number, url: string) => () =>
+    handleDeleteImage(index, url);
 
   const handleImageChange = (event: {
     target: { files: Iterable<unknown> | ArrayLike<unknown> };
@@ -93,6 +96,12 @@ const AddProduct = ({
     }
   }, [item, setValue]);
 
+  const handleNonNegativeInput = (e) => {
+    const { name, value } = e.target;
+    const nonNegativeValue = Math.max(0, +value);
+    setValue(name, nonNegativeValue);
+  };
+
   const isBtnDisabled =
     !isValid || isLoading || (!isDirty && itemData?.status !== "edit");
 
@@ -101,7 +110,7 @@ const AddProduct = ({
       <Typography variant="h4" sx={titleStyle}>
         {itemData?.status === "edit" ? "Update" : "Add"} Product
       </Typography>
-      <Typography style={{ fontSize: "16px" }}>
+      <Typography style={{ fontSize: "16px", marginBottom: 3 }}>
         Add your product and necessary information from here
       </Typography>
       <form onSubmit={handleSubmit(handleFormSubmit)} sx={formStyles}>
@@ -110,6 +119,7 @@ const AddProduct = ({
           variant="outlined"
           fullWidth
           {...register("title")}
+          sx={{ marginBottom: 3, marginTop: 3 }}
         />
         {errors.title?.message && (
           <p style={{ color: "red" }}>{errors.title?.message}</p>
@@ -129,6 +139,8 @@ const AddProduct = ({
           type="number"
           fullWidth
           {...register("salePrice")}
+          onChange={handleNonNegativeInput}
+          sx={{ marginBottom: 3, marginTop: 3 }}
         />
         {errors.salePrice?.message && (
           <p style={{ color: "red" }}>{errors.salePrice?.message}</p>
@@ -139,19 +151,11 @@ const AddProduct = ({
           type="number"
           fullWidth
           {...register("productPrice")}
+          onChange={handleNonNegativeInput}
+          sx={{ marginBottom: 3 }}
         />
         {errors.productPrice?.message && (
           <p style={{ color: "red" }}>{errors.productPrice?.message}</p>
-        )}
-        <TextField
-          label="Stock"
-          variant="outlined"
-          type="number"
-          fullWidth
-          {...register("stock")}
-        />
-        {errors.stock?.message && (
-          <p style={{ color: "red" }}>{errors.stock?.message}</p>
         )}
 
         <TextField
@@ -160,6 +164,7 @@ const AddProduct = ({
           select
           fullWidth
           {...register("categoryId")}
+          sx={{ marginBottom: 3 }}
         >
           {categoriesListData?.data.map((category) => (
             <MenuItem key={category._id} value={category._id}>
@@ -170,7 +175,7 @@ const AddProduct = ({
         {errors.categoryId?.message && (
           <p style={{ color: "red" }}>{errors.categoryId?.message}</p>
         )}
-        <div>
+        <Box sx={{ marginBottom: 3 }}>
           <input
             id="images-file-upload"
             type="file"
@@ -178,47 +183,53 @@ const AddProduct = ({
             style={{ display: "none" }}
             onChange={handleImageChange}
           />
-          <label
-            htmlFor="images-file-upload"
-            style={{
-              padding: "14px",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
+          <label htmlFor="images-file-upload" style={productLable}>
             Upload Images
           </label>
           {errors.images?.message && (
             <p style={{ color: "red" }}>{errors.images?.message}</p>
           )}
 
-          {selectedImages.map((url, index) => (
-            <Box key={index} position="relative">
-              <img
-                src={url.url}
-                alt={`Product ${index}`}
-                style={{ height: 100, margin: "5px" }}
-              />
-              <Button
-                size="small"
-                variant="contained"
-                color="secondary"
-                onClick={() => handleDeleteImage(index, url)}
-                sx={deleteButtonStyle}
-              >
-                Delete
-              </Button>
-            </Box>
-          ))}
+          <Box sx={{ display: "flex", gap: 3 }}>
+            {selectedImages.map((url, index) => (
+              <Box key={index} sx={{ marginTop: 3, position: "relative" }}>
+                <img
+                  src={url.url}
+                  alt={`Product ${index}`}
+                  style={{ height: 100, margin: "5px" }}
+                />
+                <Button
+                  size="small"
+                  onClick={getDeleteHandler(index, url)}
+                  sx={deleteButtonStyle}
+                >
+                  X
+                </Button>
+              </Box>
+            ))}
+          </Box>
 
           {err && <p style={{ color: "red" }}>{err}</p>}
+          <TextField
+            label="Stock"
+            variant="outlined"
+            type="number"
+            fullWidth
+            {...register("stock")}
+            onChange={handleNonNegativeInput}
+            sx={{ marginBottom: 3, marginTop: 4 }}
+          />
+          {errors.stock?.message && (
+            <p style={{ color: "red" }}>{errors.stock?.message}</p>
+          )}
           <Switch
             {...register("isPublish")}
             defaultChecked={item?.isPublish || false}
             color="primary"
+            sx={{ marginTop: 2 }}
           />
-        </div>
+        </Box>
+
         <Button
           variant="contained"
           color="primary"

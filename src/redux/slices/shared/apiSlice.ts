@@ -25,7 +25,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Category", "Product", "Basket", "Profile"],
+  tagTypes: ["Category", "Product", "Basket", "Profile", "Admin"],
   endpoints: (builder) => ({
     getCategories: builder.query<void, void>({
       query: () => "/dashboard/categories",
@@ -161,6 +161,7 @@ export const apiSlice = createApi({
         },
       }),
     }),
+
     addStaff: builder.mutation({
       query: (newStaff) => ({
         url: "/dashboard/register",
@@ -182,13 +183,7 @@ export const apiSlice = createApi({
         },
       }),
     }),
-    // updateBasketItem: builder.mutation({
-    //   query: ({ id, productId, productCount }) => ({
-    //     url: `/site/basket`,
-    //     method: "PUT",
-    //     body: { basket_id: id, productId, productCount },
-    //   }),
-    // }),
+
     addNewBasketItem: builder.mutation({
       query: (basket) => ({
         url: `/site/basket`,
@@ -265,10 +260,17 @@ export const apiSlice = createApi({
         body: siteInfo,
       }),
     }),
+    deleteUser: builder.mutation<void, { user_id: string }>({
+      query: ({ user_id }) => ({
+        url: `/dashboard/users/${user_id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
 export const {
+  useDeleteUserMutation,
   useGetCategoriesQuery,
   useAddCategoryMutation,
   useUpdateCategoryMutation,

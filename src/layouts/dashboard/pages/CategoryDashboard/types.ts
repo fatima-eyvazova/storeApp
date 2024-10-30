@@ -22,3 +22,8 @@ export interface CategoryProps {
   selectedItems: string[];
   setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>;
 }
+
+export interface CategoryComponentProps {
+  setOpen: (bool: boolean) => void;
+  setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
+}

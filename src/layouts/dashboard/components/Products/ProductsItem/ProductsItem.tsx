@@ -28,10 +28,13 @@ const ProductsItem = ({
   const dispatch = useDispatch();
   const url = item?.images?.[0] as { url: string };
   const [openModal, setOpenModal] = useState(false);
+
   const categoryName =
     categories?.data?.find(
-      (item: { id: string; categoryId: string }) => item.id === item.categoryId
+      (category: { _id: string }) => category._id === item.categoryId
     )?.name || "Unknown";
+
+  console.log("categories", categories);
 
   const setSelectedItem = (status: "edit" | "view" | "delete") => {
     setOpen(true);

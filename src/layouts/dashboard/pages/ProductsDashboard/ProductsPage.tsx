@@ -20,7 +20,7 @@ import { drawerStyles } from "../../../../constants";
 import { ProductData } from "./types";
 import { getBase64 } from "../../../../utils/convertToBase64";
 import { useDispatch, useSelector } from "react-redux";
-import { GetProductItem, RootState } from "../../../../redux/types";
+import { RootState } from "../../../../redux/types";
 import { selectItem } from "../../../../redux/slices/dashboard/selectedItemSlice";
 
 const ProductsDashboard = () => {
@@ -50,7 +50,14 @@ const ProductsDashboard = () => {
   const [updateProduct] = useUpdateProductMutation();
   const dispatch = useDispatch();
 
+  // const toggleDrawer = () => {
+  //   setOpen(!open);
+  // };
   const toggleDrawer = () => {
+    if (!open) {
+      dispatch(selectItem({ itemData: { item: null, status: "" } }));
+      setSelectedImages([]);
+    }
     setOpen(!open);
   };
 

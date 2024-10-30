@@ -16,6 +16,7 @@ import Basket from "../layouts/site/page/Basket/Basket";
 import Favorites from "../layouts/site/page/Favorites/Favorites";
 import Orders from "../layouts/dashboard/pages/Orders/Orders";
 import Checkout from "../layouts/site/page/Checkout/Checkout";
+import AnalyticsChart from "../layouts/dashboard/pages/Analytics/Analytics";
 const router = createBrowserRouter([
   {
     path: ROUTES.dashboardProducts,
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
   {
     path: ROUTES.shop,
     element: <Shop />,
+  },
+  {
+    path: ROUTES.analyst,
+    element: <AnalyticsChart />,
   },
   {
     path: ROUTES.checkout,

@@ -1,7 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { type Swiper as SwiperRef } from "swiper";
 import { useState, useRef } from "react";
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
@@ -16,6 +15,14 @@ import { TiSocialGooglePlus } from "react-icons/ti";
 import { TbBrandPinterest } from "react-icons/tb";
 import { Box, Typography, IconButton } from "@mui/material";
 import { GetProductItem } from "../../../../dashboard/pages/ProductsDashboard/types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/types";
+import {
+  iconButtonStyle,
+  productInfoBox,
+  swiperStlyle,
+  titleInfoStile,
+} from "../../../../../constants";
 
 type ProductInfoProps = {
   product: GetProductItem;
@@ -31,46 +38,42 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   handleAddToBasket,
 }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const { token, user } = useSelector((state: RootState) => state.auth);
 
   const swiper1Ref = useRef<SwiperRef | null>(null);
   const productImages = product?.images as { url: string; public_id: string }[];
 
+  const isClient = token && user?.role === "client";
+  const isProductInStock = product.stock > 0;
+  const handleSwiper = (swiper: SwiperRef | null) => {
+    if (swiper1Ref.current) {
+      swiper1Ref.current = swiper;
+    }
+  };
+  const isThumbsSwiperValid = thumbsSwiper && !thumbsSwiper.destroyed;
+
   return (
-    <Box
-      display="flex"
-      flexDirection={{ xs: "column", md: "row" }}
-      sx={{ gap: 4, p: 2 }}
-    >
+    <Box sx={productInfoBox}>
       <Box sx={{ width: "50vw" }}>
         <Swiper
-          style={{
-            "--swiper-navigation-color": "transparent",
-            "--swiper-pagination-color": "transparent",
-            height: "90vh",
-          }}
-          onSwiper={(swiper) => {
-            if (swiper1Ref.current !== null) {
-              swiper1Ref.current = swiper;
-            }
-          }}
+          style={swiperStlyle}
+          onSwiper={handleSwiper}
           spaceBetween={10}
           navigation
           thumbs={{
-            swiper:
-              thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+            swiper: isThumbsSwiperValid ? thumbsSwiper : null,
           }}
           modules={[FreeMode, Navigation, Thumbs]}
-          className="swiper-details"
         >
           {productImages?.map((image) => (
-            <SwiperSlide className="slide-item" key={image.public_id}>
+            <SwiperSlide key={image.public_id}>
               <Box component="figure" sx={{ width: "90vh" }}>
                 <img
                   src={image?.url}
                   alt="swiper"
                   style={{
                     width: "37vw",
-                    height: "94vh",
+                    height: "87vh ",
                   }}
                 />
               </Box>
@@ -85,10 +88,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
           freeMode
           watchSlidesProgress
           modules={[FreeMode, Navigation, Thumbs]}
-          className="swiper-images"
         >
           {productImages?.map((image) => (
-            <SwiperSlide className="slide-image" key={image.public_id}>
+            <SwiperSlide key={image.public_id}>
               <Box component="figure" sx={{ height: "60vh" }}>
                 <img src={image?.url} alt="swiper" style={{ width: "100%" }} />
               </Box>
@@ -97,19 +99,19 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         </Swiper>
       </Box>
 
-      <Box className="product-details-info" p={2} sx={{ pt: 9 }}>
+      <Box sx={{ pt: 9, p: 2 }}>
         <Typography variant="h4" gutterBottom>
           {product?.title}
         </Typography>
 
-        <Box display="flex" alignItems="center" gap={2} mb={2}>
+        <Box sx={titleInfoStile}>
           <Typography variant="body2" sx={{ textDecoration: "line-through" }}>
             ${product?.productPrice}
           </Typography>
           <Typography variant="h6">${product?.salePrice}</Typography>
         </Box>
 
-        <Box display="flex" alignItems="center" gap={1} mb={2}>
+        <Box sx={titleInfoStile}>
           {product?.stock > 0 ? (
             <IoMdCheckboxOutline color="green" />
           ) : (
@@ -124,14 +126,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
           {product?.description}
         </Typography>
 
-        <Box display="flex" alignItems="center" gap={2} mb={2}>
+        <Box sx={titleInfoStile}>
           <IconButton
             onClick={handleAddToBasket}
-            sx={{
-              backgroundColor: "#ebebeb",
-              borderRadius: "50%",
-              "&:hover": { backgroundColor: "#26c6d0" },
-            }}
+            sx={iconButtonStyle}
+            disabled={!isClient || !isProductInStock}
           >
             <HiOutlineShoppingBag />
           </IconButton>
@@ -145,7 +144,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
           </IconButton>
         </Box>
 
-        <Box display="flex" gap={2}>
+        <Box sx={{ gap: 2, display: "flex" }}>
           <IconButton>
             <FaFacebookF />
           </IconButton>

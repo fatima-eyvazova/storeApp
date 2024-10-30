@@ -3,11 +3,14 @@ import { Button, TextField, Typography } from "@mui/material";
 import { FaStar } from "react-icons/fa";
 import { Box } from "@mui/system";
 import { useTranslation } from "react-i18next";
-
-interface FeedbackFormProps {
-  onSubmit: (rating: number, review: string) => Promise<void>;
-  isPurchased: boolean;
-}
+import {
+  feedbackFormContainer,
+  starIconStyle,
+  starsStyle,
+  submitButtonStyle,
+  textFieldStyle,
+} from "../../../../constants";
+import { FeedbackFormProps } from "../../page/Detail/type";
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onSubmit,
@@ -22,7 +25,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const handleStarClick = (index: number) => {
     setRating(index + 1);
   };
-
+  const handleReviewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setReview(e.target.value);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating > 0 && review) {
@@ -32,62 +37,39 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     }
   };
 
+  const renderStars = () => {
+    return stars.map((index) => (
+      <FaStar
+        key={index}
+        color={index < rating ? "#ffc107" : "#e4e5e9"}
+        onClick={() => handleStarClick(index)}
+        style={starsStyle}
+      />
+    ));
+  };
   if (!isPurchased) return null;
 
   return (
-    <Box
-      sx={{
-        backgroundColor: "#f9f9f9",
-        borderRadius: 2,
-        p: 3,
-        boxShadow: 1,
-        mb: 4,
-      }}
-    >
+    <Box sx={feedbackFormContainer}>
       <form onSubmit={handleSubmit}>
         <Typography variant="h6" gutterBottom>
           {t("feedbackFormTitle")}
         </Typography>
-        <Box sx={{ display: "flex", cursor: "pointer", mb: 2 }}>
-          {stars.map((index) => (
-            <FaStar
-              key={index}
-              color={index < rating ? "#ffc107" : "#e4e5e9"}
-              onClick={() => handleStarClick(index)}
-              style={{
-                padding: "0 2px",
-                fontSize: 30,
-              }}
-            />
-          ))}
-        </Box>
+        <Box sx={starIconStyle}>{renderStars()}</Box>
         <TextField
           label={t("review")}
           value={review}
-          onChange={(e) => setReview(e.target.value)}
+          onChange={handleReviewChange}
           multiline
           rows={4}
-          sx={{
-            mb: 2,
-            width: "100%",
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 1,
-            },
-          }}
+          sx={textFieldStyle}
           variant="outlined"
         />
         <Button
           variant="contained"
           color="primary"
           type="submit"
-          sx={{
-            textTransform: "none",
-            borderRadius: 1,
-            padding: "10px 20px",
-            "&:hover": {
-              backgroundColor: "#0056b3",
-            },
-          }}
+          sx={submitButtonStyle}
         >
           {t("submit")}
         </Button>

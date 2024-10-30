@@ -6,11 +6,9 @@ import {
   useAddRemoveFavoriteMutation,
   useGetProfileQuery,
   useAddNewBasketItemMutation,
-  // useUpdateBasketItemMutation,
-  useGetBasketItemsQuery,
   useGetProductReviewsQuery,
 } from "../../../../redux/slices/shared/apiSlice";
-import { Typography, Box, Breadcrumbs, Link, Button } from "@mui/material";
+import { Typography, Box, Breadcrumbs, Link } from "@mui/material";
 import { IoIosArrowForward } from "react-icons/io";
 import { Link as RouterLink } from "react-router-dom";
 import ProductInfo from "../../components/Details/ProductInfo/ProductInfo";
@@ -20,23 +18,28 @@ import { RootState } from "../../../../redux/types";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import ProductReviewList from "../../components/Details/ProductReviewList";
+import { detailBox, infoBox } from "../../../../constants";
+import { ROUTES } from "../../../../router/routeNames";
+import { ProductReviewListProps } from "./type";
 
-const ProductDetails: React.FC = () => {
+const ProductDetails: React.FC<ProductReviewListProps> = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const userId = useSelector((state: RootState) => state.auth.user);
   const { token, user } = useSelector((state: RootState) => state.auth);
 
   const [giveFeedback] = useGiveFeedbackMutation();
-  const { data: userProfile } = useGetProfileQuery();
-  const { data: reviews } = useGetProductReviewsQuery(id, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: userProfile } = useGetProfileQuery(userId);
+  const { data: reviews, refetch: refetchReviews } = useGetProductReviewsQuery(
+    id,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
   const [addRemoveFavorite] = useAddRemoveFavoriteMutation();
   const [addToBasket] = useAddNewBasketItemMutation();
-  const { data: dbBasketList } = useGetBasketItemsQuery(token, {
-    skip: !token || user?.role !== "client",
-  });
+  const [localQuantity, setLocalQuantity] = useState(1);
+
   const { data } = useGetProductByIdQuery(id || "");
 
   const { data: ordersData } = useGetOrdersQuery({
@@ -48,14 +51,18 @@ const ProductDetails: React.FC = () => {
   const product = data?.data;
 
   const favs = userProfile?.data?.user.favorites || [];
-  const favorite = favs.find((pr) => pr?._id === product?._id);
+  const favorite = favs.find((pr: { _id: string }) => pr?._id === product?._id);
   const [isFavorite, setIsFavorite] = useState(favorite);
 
-  const isPurchased = ordersData?.data?.data?.some((order: any) =>
-    order.products.some(
-      (orderProduct: any) =>
-        orderProduct.productId === id && order.customer.userId === userId?._id
-    )
+  const isPurchased = ordersData?.data?.data?.some(
+    (order: {
+      products: undefined[];
+      customer: { userId: string | undefined };
+    }) =>
+      order.products.some(
+        (orderProduct) =>
+          orderProduct.productId === id && order.customer.userId === userId?._id
+      )
   );
 
   const handleReviewSubmit = async (rating: number, review: string) => {
@@ -66,49 +73,36 @@ const ProductDetails: React.FC = () => {
         rating,
       };
       await giveFeedback(feedbackData).unwrap();
+      refetchReviews();
       alert("Review submitted successfully!");
     } catch (error) {
       console.error("Error submitting review:", error);
       alert("Error submitting review");
     }
   };
-  const handleAddToBasket = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+  const handleAddToBasket = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (token && user?.role === "client") {
       try {
-        if (dbBasketList?.data) {
-          const basketItem = dbBasketList?.data.find(
-            (item) => item?.productId === id
-          );
-        }
-        console.log({ basketItem });
+        await addToBasket({
+          userId: user?._id,
+          productId: id,
+          productCount: localQuantity,
+        });
 
-        if (basketItem) {
-          const quantity = basketItem.productCount + 1;
-          // await updateBasketItem({
-          //   id: basketItem._id,
-          //   productCount: quantity,
-          //   productId: basketItem.productId,
-          // });
-        } else {
-          await addToBasket({
-            basket: [
-              {
-                productId: id,
-                productCount: 1,
-              },
-            ],
-          });
-        }
+        console.log("localQuantity", localQuantity);
+
+        setLocalQuantity((prev) => prev + 1);
       } catch (error) {
         console.error("Basket update error:", error);
       }
     }
   };
 
-  const handleFavoriteClick = (e: React.ChangeEvent<HTMLDivElement>) => {
+  const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFavorite((prev) => !prev);
+    setIsFavorite((prev: unknown) => !prev);
     addRemoveFavorite({
       product_id: id,
     });
@@ -119,14 +113,7 @@ const ProductDetails: React.FC = () => {
       <Box py={4}>
         {product && (
           <Box>
-            <Box
-              sx={{
-                mb: 3,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
+            <Box sx={detailBox}>
               <Typography variant="h4" component="h2" gutterBottom>
                 {product?.title}
               </Typography>
@@ -138,7 +125,7 @@ const ProductDetails: React.FC = () => {
               >
                 <Link
                   component={RouterLink}
-                  to="/"
+                  to={ROUTES.home}
                   underline="hover"
                   color="inherit"
                 >
@@ -147,14 +134,7 @@ const ProductDetails: React.FC = () => {
                 <Typography color="text.primary">{product?.title}</Typography>
               </Breadcrumbs>
             </Box>
-            <Box
-              sx={{
-                width: "80vw",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <Box sx={infoBox}>
               <ProductInfo
                 handleFavoriteClick={handleFavoriteClick}
                 handleAddToBasket={handleAddToBasket}

@@ -4,13 +4,15 @@ import { IoIosLogOut } from "react-icons/io";
 import { TbBrandSafari, TbBrand4Chan } from "react-icons/tb";
 import { RiAdminLine } from "react-icons/ri";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { SiSimpleanalytics } from "react-icons/si";
 import { useSelector } from "react-redux";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../../router/routeNames";
 import { RootState } from "../../../../redux/types";
 import LogOutModal from "../../../shared/modals/LogOutModal/LogOutModal";
 import LinkItem from "./LinkItem/LinkItem";
+import { sidebarBox } from "../../../../constants";
 
 const Sidebar = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +31,11 @@ const Sidebar = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
       path: ROUTES.dashboardProducts,
       name: "Products",
       icon: <MdOutlineProductionQuantityLimits />,
+    },
+    {
+      path: ROUTES.analyst,
+      name: "Analyst",
+      icon: <SiSimpleanalytics />,
     },
     {
       path: ROUTES.category,
@@ -72,15 +79,7 @@ const Sidebar = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
             transition: "width 0.3s ease",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "20px",
-              borderBottom: "1px solid #555",
-            }}
-          >
+          <Box sx={sidebarBox}>
             {isOpen && (
               <Box
                 component="img"

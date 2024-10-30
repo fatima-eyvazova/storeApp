@@ -595,8 +595,9 @@ export const imageStyle = {
 
 export const deleteButtonStyle = {
   position: "absolute",
-  top: 0,
-  right: 0,
+  top: "-9px",
+  right: "-25px",
+  fontSize: 20,
 };
 
 export const formStyles = {
@@ -677,4 +678,215 @@ export const tableCellStyle = {
   color: "white",
   fontWeight: "bold",
   minWidth: "120px",
+};
+
+export const productLable = {
+  padding: "14px",
+  backgroundColor: "#4CAF50",
+  color: "white",
+  cursor: "pointer",
+};
+
+export const categorieTypography = {
+  paddingBottom: "10px",
+  fontFamily: "serif",
+  fontSize: "24px",
+  fontWeight: "600",
+  color: "blue",
+};
+
+export const categorieForm = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+};
+
+export const categorieFormLable = {
+  width: "130px",
+  padding: "14px ",
+  backgroundColor: "#4CAF50",
+  color: "white",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+};
+
+export const detailBox = {
+  mb: 3,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+};
+
+export const infoBox = {
+  width: "80vw",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+export const productInfoBox = {
+  display: "flex",
+  flexDirection: {
+    xs: "column",
+    md: "row",
+  },
+  gap: 4,
+  p: 2,
+};
+
+export const swiperStlyle = {
+  "--swiper-navigation-color": "transparent",
+  "--swiper-pagination-color": "transparent",
+  height: "90vh",
+};
+
+export const iconButtonStyle = {
+  backgroundColor: "#ebebeb",
+  borderRadius: "50%",
+  "&:hover": { backgroundColor: "#26c6d0" },
+};
+
+export const titleInfoStile = {
+  gap: 2,
+  mb: 2,
+  display: "flex",
+  alignItems: "center",
+};
+
+export const boxStyle = {
+  mt: 4,
+  width: { xs: "100%", md: "80%" },
+  mx: "auto",
+  bgcolor: "background.paper",
+  borderRadius: 3,
+  boxShadow: 3,
+  p: 3,
+};
+
+export const titleNewStyle = {
+  fontWeight: "bold",
+  color: "primary.main",
+  textAlign: "center",
+};
+
+export const listItemStyles = {
+  alignItems: "flex-start",
+  borderBottom: "1px solid #f0f0f0",
+  mb: 2,
+  padding: "16px 0",
+};
+
+export const avatarStyle = {
+  width: 50,
+  height: 50,
+  mr: 2,
+};
+
+export const buttonStyle = {
+  textTransform: "none",
+  borderRadius: 3,
+  fontWeight: "bold",
+  px: 4,
+  py: 1.5,
+  "&:hover": {
+    backgroundColor: "#e4e5e9",
+  },
+};
+
+export const feedbackFormContainer = {
+  backgroundColor: "#f9f9f9",
+  borderRadius: 2,
+  p: 3,
+  boxShadow: 1,
+  mb: 4,
+};
+
+export const starIconStyle = {
+  display: "flex",
+  cursor: "pointer",
+  mb: 2,
+};
+
+export const textFieldStyle = {
+  mb: 2,
+  width: "100%",
+  "& .MuiOutlinedInput-root": {
+    borderRadius: 1,
+  },
+};
+
+export const submitButtonStyle = {
+  textTransform: "none",
+  borderRadius: 1,
+  padding: "10px 20px",
+  "&:hover": {
+    backgroundColor: "#0056b3",
+  },
+};
+
+export const starsStyle = {
+  padding: "0 2px",
+  fontSize: 30,
+  cursor: "pointer",
+};
+
+export const listStyle = { maxHeight: "50vh", overflowY: "auto", padding: 0 };
+
+export const sidebarBox = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "20px",
+  borderBottom: "1px solid #555",
+};
+
+export const ourStaffBox = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+};
+
+export const ourStaffIconeButton = {
+  position: "absolute",
+  top: 16,
+  right: 16,
+  color: "red",
+};
+
+export const ourStaffTypography = {
+  paddingBottom: "10px",
+  fontFamily: "serif",
+  fontSize: "24px",
+  fontWeight: "600",
+  color: "blue",
+};
+
+export const ourStaffForm = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+};
+
+export const tableCell = {
+  "&.MuiTableCell-head": {
+    backgroundColor: "black",
+    color: "white",
+    fontWeight: "bold",
+  },
+  "&.MuiTableCell-body": {
+    fontSize: 14,
+  },
+  minWidth: "120px",
+};
+
+export const chartBox = {
+  display: "flex",
+  justifyContent: "center",
+  marginTop: "20px",
+};
+
+export const barColors = {
+  stock: "#82ca9d",
+  totalOrders: "#ff7300",
 };

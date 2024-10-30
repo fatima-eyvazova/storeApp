@@ -118,14 +118,15 @@ const Shop = () => {
 
   const handleMinPriceChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setMinMaxPrice((prev) => ({ ...prev, min: +e.target.value }));
+      const value = Math.max(0, +e.target.value);
+      setMinMaxPrice((prev) => ({ ...prev, min: value }));
     },
     []
   );
-
   const handleMaxPriceChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setMinMaxPrice((prev) => ({ ...prev, max: +e.target.value }));
+      const value = Math.max(0, +e.target.value);
+      setMinMaxPrice((prev) => ({ ...prev, max: value }));
     },
     []
   );

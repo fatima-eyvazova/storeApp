@@ -13,11 +13,16 @@ const Favorites = () => {
   return (
     <MainLayout>
       <Container>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" sx={{ marginTop: 4 }}>
           {t("titleFavorite")}
         </Typography>
         {favoriteData.length === 0 ? (
-          <Box sx={{ textAlign: "center", mt: 2 }}>
+          <Box
+            sx={{
+              mt: 2,
+              height: "35vh",
+            }}
+          >
             <Typography variant="h6">{t("noProducts")}</Typography>
           </Box>
         ) : (

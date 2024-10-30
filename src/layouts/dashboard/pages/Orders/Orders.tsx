@@ -29,16 +29,7 @@ const Orders: React.FC = () => {
     }
   }, [data]);
 
-  console.log(
-    "Page:",
-    page,
-    "PerPage:",
-    perPage,
-    "SearchInput:",
-    searchInput,
-    "status:",
-    status
-  );
+  console.log(data);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading orders...</p>;

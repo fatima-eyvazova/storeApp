@@ -139,17 +139,18 @@ const ProductCard = ({ product, favs }: Props) => {
         </Typography>
         <Box sx={productPriceCartStyles}>
           <Box sx={productPriceInfo}>
-            <Typography variant="h6" sx={{ color: "red" }}>
-              ${productPrice}
-            </Typography>
             {salePrice && (
-              <Typography
-                variant="body2"
-                sx={{ textDecoration: "line-through", color: "#454545" }}
-              >
-                ${salePrice}
+              <Typography variant="h6" sx={{ color: "red" }}>
+                $ {salePrice}
               </Typography>
             )}
+
+            <Typography
+              variant="body2"
+              sx={{ textDecoration: "line-through", color: "#454545" }}
+            >
+              ${productPrice}
+            </Typography>
           </Box>
 
           <IconButton

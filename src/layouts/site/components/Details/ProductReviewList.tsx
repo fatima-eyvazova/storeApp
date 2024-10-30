@@ -10,8 +10,17 @@ import {
 } from "@mui/material";
 import { format } from "date-fns";
 import FeedbackForm from "./FeedbackForm";
+import {
+  avatarStyle,
+  boxStyle,
+  buttonStyle,
+  listItemStyles,
+  listStyle,
+  titleNewStyle,
+} from "../../../../constants";
+import { ProductReviewListProps } from "../../page/Detail/type";
 
-const ProductReviewList: React.FC<{ reviews: any[] }> = ({
+const ProductReviewList: React.FC<ProductReviewListProps> = ({
   reviews,
   handleReviewSubmit,
   isPurchased,
@@ -23,41 +32,17 @@ const ProductReviewList: React.FC<{ reviews: any[] }> = ({
   };
 
   return (
-    <Box
-      sx={{
-        mt: 4,
-        width: { xs: "100%", md: "80%" },
-        mx: "auto",
-        bgcolor: "background.paper",
-        borderRadius: 3,
-        boxShadow: 3,
-        p: 3,
-      }}
-    >
-      <Typography
-        variant="h5"
-        component="h3"
-        gutterBottom
-        sx={{ fontWeight: "bold", color: "primary.main", textAlign: "center" }}
-      >
+    <Box sx={boxStyle}>
+      <Typography variant="h5" component="h3" gutterBottom sx={titleNewStyle}>
         Reviews
       </Typography>
-
-      <List sx={{ maxHeight: "50vh", overflowY: "auto", padding: 0 }}>
+      <List sx={listStyle}>
         {reviews.map((review) => (
-          <ListItem
-            key={review._id}
-            alignItems="flex-start"
-            sx={{
-              borderBottom: "1px solid #f0f0f0",
-              mb: 2,
-              padding: "16px 0",
-            }}
-          >
+          <ListItem key={review._id} sx={listItemStyles}>
             <Avatar
               alt="User Avatar"
               src={review.userAvatar}
-              sx={{ width: 50, height: 50, mr: 2 }}
+              sx={avatarStyle}
             />
             <ListItemText
               primary={
@@ -82,27 +67,18 @@ const ProductReviewList: React.FC<{ reviews: any[] }> = ({
           </ListItem>
         ))}
       </List>
-
-      {!showFeedbackForm ? (
+      {isPurchased && !showFeedbackForm && (
         <Box sx={{ textAlign: "center", mt: 3 }}>
           <Button
             variant="outlined"
-            sx={{
-              textTransform: "none",
-              borderRadius: 3,
-              fontWeight: "bold",
-              px: 4,
-              py: 1.5,
-              "&:hover": {
-                backgroundColor: "#e4e5e9",
-              },
-            }}
+            sx={buttonStyle}
             onClick={handleCommentClick}
           >
             Add a Comment
           </Button>
         </Box>
-      ) : (
+      )}
+      {showFeedbackForm && (
         <FeedbackForm onSubmit={handleReviewSubmit} isPurchased={isPurchased} />
       )}
     </Box>

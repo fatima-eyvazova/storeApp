@@ -55,7 +55,7 @@ const TableItem: React.FC<TableItemProps> = ({
         {item?.createdAt?.split("T")?.[0]}
       </TableCell>
       <TableCell sx={orderTableStyle}>{item?.customer?.name}</TableCell>
-      <TableCell sx={orderTableStyle}>{item?.total}</TableCell>
+      <TableCell sx={orderTableStyle}>{item?.total} $</TableCell>
       <TableCell sx={orderTableStyle}>{item?.status}</TableCell>
       <TableCell>
         <Select
