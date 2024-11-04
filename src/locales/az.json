@@ -91,5 +91,6 @@
   "requiredEmail": "E-poçt tələb olunur",
   "invalidEmail": "Bu e-poçt olmalıdır",
   "requiredPassword": "Parol tələb olunur",
-  "passwordMinLength": "Parol 6 simvoldan ibarət olmalıdır"
+  "passwordMinLength": "Parol 6 simvoldan ibarət olmalıdır",
+  "shoppingText": "Sizin alış-veriş Səbətiniz"
 }

@@ -86,7 +86,6 @@ const AddProduct = ({
       const imageUrls = item?.images.map((img) => {
         return { url: img.url, public_id: img.public_id };
       });
-      console.log({ imageUrls });
 
       setSelectedImages(imageUrls);
       setValue("images", imageUrls);

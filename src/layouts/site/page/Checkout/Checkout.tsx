@@ -4,9 +4,9 @@ import { Button, Box, Typography } from "@mui/material";
 import { ROUTES } from "../../../../router/routeNames";
 import { BasketProduct, RootState } from "../../../../redux/types";
 import {
+  useAllRemoveBasketMutation,
   useCreateOrderMutation,
   useGetBasketItemsQuery,
-  useRemoveBasketItemMutation,
 } from "../../../../redux/slices/shared/apiSlice";
 import CheckoutItem from "../../components/CheckoutItem/CheckoutItem";
 import { useTranslation } from "react-i18next";
@@ -20,42 +20,46 @@ import {
   continueShopping,
   emptyBasketContainer,
 } from "../../../../constants";
+import { useEffect, useState } from "react";
 
 const Checkout = () => {
   const { t } = useTranslation();
   const token = useSelector((state: RootState) => state.auth.token);
+  const [allRemoveBasket] = useAllRemoveBasketMutation();
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
 
   const { data: basketProducts, isLoading: isLoadingProducts } =
     useGetBasketItemsQuery(token, {
       refetchOnMountOrArgChange: true,
     });
 
-  const product = basketProducts?.products as BasketProduct[];
+  const [products, setProducts] = useState<BasketProduct[]>([]);
 
-  const [createOrder, { isLoading }] = useCreateOrderMutation();
-  const [removeBasketItem] = useRemoveBasketItemMutation();
+  useEffect(() => {
+    if (basketProducts?.products) {
+      setProducts(basketProducts.products);
+    }
+  }, [basketProducts]);
 
   const handleCreateOrder = async () => {
-    if (!product || product?.length === 0) {
+    if (!products || products.length === 0) {
       console.error("No products in the basket.");
       return;
     }
 
     const payload = {
-      products: product.map((pr) => ({
-        productId: pr?._id,
-        productCount: pr?.productCount,
+      products: products.map((pr) => ({
+        productId: pr._id,
+        productCount: pr.productCount,
       })),
     };
 
     try {
       await createOrder(payload).unwrap();
-      for (const item of product) {
-        await removeBasketItem({
-          id: item._id,
-          token,
-        }).unwrap();
-      }
+
+      await allRemoveBasket().unwrap();
+
+      setProducts([]);
     } catch (error) {
       if (error && error.data && error.data.message) {
         alert(error.data.message);
@@ -69,10 +73,10 @@ const Checkout = () => {
         <Box sx={checkoutContent}>
           {isLoadingProducts ? (
             <Typography>{t("loadingCheckout")}</Typography>
-          ) : product?.length > 0 ? (
+          ) : products.length > 0 ? (
             <Box sx={checkoutItemContainer}>
               <Box sx={checkoutItem}>
-                <CheckoutItem product={product} />
+                <CheckoutItem product={products} />
               </Box>
               <Box sx={{ mt: { xs: 3, md: 0 }, textAlign: "center" }}>
                 <Button

@@ -47,6 +47,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       />
     ));
   };
+
   if (!isPurchased) return null;
 
   return (

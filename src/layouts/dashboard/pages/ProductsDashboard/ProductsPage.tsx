@@ -25,7 +25,6 @@ import { selectItem } from "../../../../redux/slices/dashboard/selectedItemSlice
 
 const ProductsDashboard = () => {
   const [open, setOpen] = useState(false);
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [list, setList] = useState([]);
   const [updateList, setUpdateList] = useState([]);
@@ -38,7 +37,6 @@ const ProductsDashboard = () => {
   const itemData = useSelector(
     (state: RootState) => state.selectedItem.itemData
   );
-  const item = itemData?.item;
   const { data: productsData, refetch } = useGetProductsQuery({
     page,
     perPage,
@@ -50,9 +48,6 @@ const ProductsDashboard = () => {
   const [updateProduct] = useUpdateProductMutation();
   const dispatch = useDispatch();
 
-  // const toggleDrawer = () => {
-  //   setOpen(!open);
-  // };
   const toggleDrawer = () => {
     if (!open) {
       dispatch(selectItem({ itemData: { item: null, status: "" } }));
@@ -70,23 +65,6 @@ const ProductsDashboard = () => {
       setList(productsData?.data?.product);
     }
   }, [productsData]);
-
-  const handleDeleteSelectedItems = async () => {
-    if (selectedItems.length === 0) {
-      alert("The product to be deleted has not been selected!");
-      return;
-    }
-
-    try {
-      for (const id of selectedItems) {
-        await deleteProduct(id).unwrap();
-      }
-      setOpenDeleteModal(true);
-      refetch();
-    } catch (error) {
-      console.error("An error occurred during the deletion process:", error);
-    }
-  };
 
   const handleDeleteProduct = async (id: string) => {
     await deleteProduct(id).unwrap();
@@ -108,16 +86,12 @@ const ProductsDashboard = () => {
           imgBase64 = await Promise.all(newImages.map((img) => getBase64(img)));
         }
       }
-
       const finalImages = [...imgBase64];
-
       let res;
-
       if (itemData?.item && itemData.status === "edit") {
         const existingImages =
           values?.images?.filter((img) => !(img instanceof File)) || [];
         finalImages.push(...existingImages);
-
         res = await updateProduct({
           id: itemData?.item?._id,
           ...values,
@@ -126,7 +100,6 @@ const ProductsDashboard = () => {
       } else {
         res = await addProduct({ ...values, images: finalImages });
       }
-
       handleResponse(res);
     } catch (e) {
       console.error("Error submitting form:", e);
@@ -154,15 +127,6 @@ const ProductsDashboard = () => {
 
     setSelectedItems(updatedSelectedItems);
   };
-
-  function selectCheckboxes() {
-    if (selectedItems?.length === list?.length) {
-      setSelectedItems([]);
-    } else {
-      const allItemIds = list.map((item) => item?._id);
-      setSelectedItems(allItemIds);
-    }
-  }
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -192,7 +156,6 @@ const ProductsDashboard = () => {
                 <Button
                   variant="contained"
                   color="error"
-                  onClick={handleDeleteSelectedItems}
                   startIcon={<RiDeleteBin6Line />}
                 >
                   Delete
@@ -232,7 +195,6 @@ const ProductsDashboard = () => {
               categories={categoriesData}
               setOpen={setOpen}
               handleCheckboxChange={handleCheckboxChange}
-              selectCheckboxes={selectCheckboxes}
               handleChangePage={handleChangePage}
               handleChangeRowsPerPage={handleChangeRowsPerPage}
               setUpdateList={setUpdateList}
@@ -240,14 +202,6 @@ const ProductsDashboard = () => {
           </Box>
         </Box>
       </Sidebar>
-      {openDeleteModal && (
-        <DeleteModal
-          setOpenModal={setOpenDeleteModal}
-          onDelete={handleDeleteProduct}
-          itemIdList={selectedItems}
-          resource="products"
-        />
-      )}
     </>
   );
 };

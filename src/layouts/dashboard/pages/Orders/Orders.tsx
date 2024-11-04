@@ -7,7 +7,6 @@ import { GetOrderItem } from "./type";
 
 const Orders: React.FC = () => {
   const [list, setList] = useState<GetOrderItem[]>([]);
-  const [searchInput, setSearchInput] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [status, setStatus] = useState<string>("");
@@ -19,7 +18,6 @@ const Orders: React.FC = () => {
     page: page + 1,
     startDate,
     endDate,
-    search: searchInput,
     status,
   });
 
@@ -28,8 +26,6 @@ const Orders: React.FC = () => {
       setList(data.data.data);
     }
   }, [data]);
-
-  console.log(data);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading orders...</p>;
@@ -40,8 +36,6 @@ const Orders: React.FC = () => {
     <>
       <Sidebar>
         <OrderFilter
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
           endDate={endDate}
@@ -51,7 +45,6 @@ const Orders: React.FC = () => {
         />
         <OrderTable
           list={list}
-          searchInput={searchInput}
           totalCount={totalCount}
           page={page}
           perPage={perPage}

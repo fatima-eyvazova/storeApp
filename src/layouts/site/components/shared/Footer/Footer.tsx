@@ -17,61 +17,31 @@ import {
   IconButton,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import {
+  allRightsReserved,
+  footerBox,
+  footerCopyright,
+  footerTypography,
+  textBox,
+} from "../../../../../constants";
 
 const Footer = () => {
   const { t } = useTranslation();
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column",
-        width: "100vw",
-        backgroundColor: "black",
-        height: "20vw",
-        color: "white",
-      }}
-    >
+    <Box sx={footerBox}>
       <Box sx={{ width: "90vw" }}>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6} md={4}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: "#ffffff",
-                  fontSize: 16,
-                  fontWeight: "bold",
-                  letterSpacing: "0.2px",
-                  lineHeight: "22px",
-                  textTransform: "uppercase",
-                }}
-              >
+              <Typography variant="h6" sx={footerTypography}>
                 {t("title")}
               </Typography>
             </Box>
-            <Typography
-              variant="body2"
-              sx={{
-                mt: 1,
-                fontSize: "19px",
-                marginTop: "30px",
-              }}
-            >
+            <Typography variant="body2" sx={footerCopyright}>
               {t("copyright")} © 2023
             </Typography>
-            <Typography
-              sx={{
-                color: "#ffffff",
-                fontSize: 16,
-                fontWeight: "bold",
-                letterSpacing: "0.2px",
-                lineHeight: "22px",
-                textTransform: "uppercase",
-              }}
-            >
+            <Typography sx={allRightsReserved}>
               {t("allRightsReserved")}
             </Typography>
           </Grid>
@@ -140,14 +110,11 @@ const Footer = () => {
           </Grid>
         </Grid>
       </Box>
-      <Box
-        sx={{
-          borderTop: "1px solid #ccc",
-          pt: 2,
-          width: "90vw",
-        }}
-      >
-        <Grid container justifyContent="space-between" alignItems="center">
+      <Box sx={textBox}>
+        <Grid
+          container
+          sx={{ alignItems: "center", justifyContent: "space-between" }}
+        >
           <Grid item>
             <List sx={{ display: "flex" }}>
               <ListItem>

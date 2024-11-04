@@ -18,7 +18,7 @@ import { Typography } from "@mui/material";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/types";
-import { chartBox } from "../../../../constants";
+import { barChart, chartBox } from "../../../../constants";
 
 const AnalyticsChart = () => {
   const { token } = useSelector((state: RootState) => state.auth);
@@ -27,6 +27,7 @@ const AnalyticsChart = () => {
     perPage: 100,
   });
   const { data: adminsData } = useGetAdminsQuery(token);
+
   const { data: ordersData, isLoading: ordersLoading } = useGetOrdersQuery({
     perPage: 10,
     page: 1,
@@ -45,15 +46,14 @@ const AnalyticsChart = () => {
       ) || [];
 
   const clientUsers =
-    adminsData.data?.filter(
+    adminsData?.data?.filter(
       (admin: { role: string }) => admin.role === "client"
     ) || [];
 
   const userOrderData = clientUsers?.map(
     (client: { _id: string; name: string; surname: string }) => {
       const userOrders = ordersData?.data?.data.filter(
-        (order: { customer: { userId: string } }) =>
-          order.customer && order.customer.userId === client._id
+        (order) => order.customer && order?.customer?.userId === client?._id
       );
 
       const totalOrders = userOrders.length;
@@ -76,13 +76,7 @@ const AnalyticsChart = () => {
             Product Stock by Title
           </Typography>
           <ResponsiveContainer>
-            <BarChart
-              data={productStockData}
-              style={{
-                width: "50vw",
-                height: "250px",
-              }}
-            >
+            <BarChart data={productStockData} style={barChart}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
@@ -101,13 +95,7 @@ const AnalyticsChart = () => {
             Total Orders by Client
           </Typography>
           <ResponsiveContainer>
-            <BarChart
-              data={userOrderData}
-              style={{
-                width: "30vw",
-                height: "250px",
-              }}
-            >
+            <BarChart data={userOrderData} style={barChart}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />

@@ -60,3 +60,13 @@ export interface TableItemProps {
   setList: React.Dispatch<React.SetStateAction<GetOrderItem[]>>;
   item: GetOrderItem;
 }
+
+export interface OrderFilters {
+  searchInput: string;
+  setSearchInput: React.Dispatch<React.SetStateAction<string>>;
+  startDate: string;
+  setStartDate: React.Dispatch<React.SetStateAction<string>>;
+  endDate: string;
+  setEndDate: React.Dispatch<React.SetStateAction<string>>;
+  setStatus: React.Dispatch<React.SetStateAction<string>>;
+}

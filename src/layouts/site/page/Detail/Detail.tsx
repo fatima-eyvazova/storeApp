@@ -16,7 +16,7 @@ import MainLayout from "../../components/shared/MainLayout/MainLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/types";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ProductReviewList from "../../components/Details/ProductReviewList";
 import { detailBox, infoBox } from "../../../../constants";
 import { ROUTES } from "../../../../router/routeNames";
@@ -36,6 +36,7 @@ const ProductDetails: React.FC<ProductReviewListProps> = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+
   const [addRemoveFavorite] = useAddRemoveFavoriteMutation();
   const [addToBasket] = useAddNewBasketItemMutation();
   const [localQuantity, setLocalQuantity] = useState(1);
@@ -54,16 +55,16 @@ const ProductDetails: React.FC<ProductReviewListProps> = () => {
   const favorite = favs.find((pr: { _id: string }) => pr?._id === product?._id);
   const [isFavorite, setIsFavorite] = useState(favorite);
 
-  const isPurchased = ordersData?.data?.data?.some(
-    (order: {
-      products: undefined[];
-      customer: { userId: string | undefined };
-    }) =>
-      order.products.some(
-        (orderProduct) =>
-          orderProduct.productId === id && order.customer.userId === userId?._id
-      )
-  );
+  const isPurchased = () => {
+    return ordersData?.data?.data?.some(
+      (order: { products: []; customer: { userId: string } }) =>
+        order.products.some(
+          (orderProduct) =>
+            orderProduct?.productId == id &&
+            order?.customer?.userId == userId?._id
+        )
+    );
+  };
 
   const handleReviewSubmit = async (rating: number, review: string) => {
     try {
@@ -90,8 +91,6 @@ const ProductDetails: React.FC<ProductReviewListProps> = () => {
           productId: id,
           productCount: localQuantity,
         });
-
-        console.log("localQuantity", localQuantity);
 
         setLocalQuantity((prev) => prev + 1);
       } catch (error) {

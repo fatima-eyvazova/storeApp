@@ -5,7 +5,6 @@ import {
   Table,
   TableContainer,
   TablePagination,
-  Checkbox,
   TableRow,
   Paper,
 } from "@mui/material";
@@ -23,28 +22,18 @@ const ProductsTable = ({
   setOpen,
   onDeleteProduct,
   handleCheckboxChange,
-  selectCheckboxes,
   handleChangePage,
   handleChangeRowsPerPage,
   setUpdateList,
   categories,
 }: PropsProductsTable) => {
   const listArr = Array.isArray(list);
-  const handleSelectAll = () => {
-    selectCheckboxes();
-  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
-            <TableCell sx={tableCellStyles.head}>
-              <Checkbox
-                style={{ backgroundColor: "white" }}
-                checked={selectedItems?.length === list?.length}
-                onChange={handleSelectAll}
-              />
-            </TableCell>
             <TableCell sx={tableCellStyles.head}>Product Name</TableCell>
             <TableCell sx={tableCellStyles.head} align="left">
               Category
@@ -86,7 +75,7 @@ const ProductsTable = ({
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25]}
               colSpan={3}
               count={totalCount}
               rowsPerPage={perPage}

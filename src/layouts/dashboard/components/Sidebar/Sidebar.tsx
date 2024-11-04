@@ -6,7 +6,7 @@ import { RiAdminLine } from "react-icons/ri";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { SiSimpleanalytics } from "react-icons/si";
 import { useSelector } from "react-redux";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../../router/routeNames";
 import { RootState } from "../../../../redux/types";
@@ -80,17 +80,7 @@ const Sidebar = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
           }}
         >
           <Box sx={sidebarBox}>
-            {isOpen && (
-              <Box
-                component="img"
-                src="/src/assets/images/logo.png"
-                alt="logo"
-                sx={{
-                  width: "100px",
-                  marginRight: "20px",
-                }}
-              />
-            )}
+            {isOpen && <Typography>Fayzelia 🛍️</Typography>}
             <Box
               sx={{ cursor: "pointer", marginLeft: isOpen ? "0px" : "10px" }}
             >

@@ -12,7 +12,7 @@ export const bannerSlideStyles = {
 };
 
 export const bannerStyles = {
-  backgroundImage: `url('/src/assets/hp-row-desk-1.webp')`,
+  backgroundImage: `url('/src/assets/b2.webp')`,
   backgroundSize: "cover",
   backgroundPosition: "center",
   height: "100%",
@@ -63,6 +63,12 @@ export const productCardStyles = {
   overflow: "hidden",
 };
 
+export const loginBoxButton = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
 export const productImageStyles = {
   objectFit: "fill",
   height: "380px",
@@ -102,6 +108,23 @@ export const basketButtonStyles = {
   backgroundColor: "#ebebeb",
   borderRadius: "50%",
   "&:hover": { backgroundColor: "#26c6d0" },
+};
+
+export const linkItem = {
+  display: "flex",
+  alignItems: "center",
+  padding: "15px 20px",
+  cursor: "pointer",
+  transition: "background-color 0.3s ease",
+  "&:hover": {
+    backgroundColor: "#555",
+  },
+};
+
+export const linkItemIcone = {
+  marginRight: "10px",
+  display: "flex",
+  alignItems: "center",
 };
 
 export const productInfo = {
@@ -889,4 +912,63 @@ export const chartBox = {
 export const barColors = {
   stock: "#82ca9d",
   totalOrders: "#ff7300",
+};
+
+export const languageBox = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "baseline",
+};
+
+export const languageTypography = {
+  fontWeight: "bold",
+  fontSize: 20,
+  color: "#1E899A",
+};
+
+export const footerBox = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "column",
+  width: "100vw",
+  backgroundColor: "black",
+  height: "20vw",
+  color: "white",
+};
+
+export const footerTypography = {
+  color: "#ffffff",
+  fontSize: 16,
+  fontWeight: "bold",
+  letterSpacing: "0.2px",
+  lineHeight: "22px",
+  textTransform: "uppercase",
+};
+
+export const footerCopyright = {
+  mt: 1,
+  fontSize: "19px",
+  marginTop: "30px",
+};
+
+export const allRightsReserved = {
+  color: "#ffffff",
+  fontSize: 16,
+  fontWeight: "bold",
+  letterSpacing: "0.2px",
+  lineHeight: "22px",
+  textTransform: "uppercase",
+};
+
+export const textBox = {
+  borderTop: "1px solid #ccc",
+  pt: 2,
+  width: "90vw",
+};
+
+export const barChart = {
+  width: "50vw",
+  height: "250px",
+  cursor: "pointer",
 };

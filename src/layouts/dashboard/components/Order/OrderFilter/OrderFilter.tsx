@@ -3,29 +3,10 @@ import {
   containerStyle3,
   dateFieldContainerStyle,
   datePickerContainerStyle,
-  searchFieldContainerStyle,
 } from "../../../../../constants";
+import { OrderFilters } from "../../../pages/Orders/type";
 
-interface Props {
-  searchInput: string;
-  setSearchInput: React.Dispatch<React.SetStateAction<string>>;
-  startDate: string;
-  setStartDate: React.Dispatch<React.SetStateAction<string>>;
-  endDate: string;
-  setEndDate: React.Dispatch<React.SetStateAction<string>>;
-  setStatus: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const OrderFilter = ({
-  searchInput,
-  setSearchInput,
-  setStartDate,
-  setEndDate,
-}: Props) => {
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value);
-  };
-
+const OrderFilter = ({ setStartDate, setEndDate }: OrderFilters) => {
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);
   };
@@ -33,6 +14,7 @@ const OrderFilter = ({
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(e.target.value);
   };
+
   return (
     <Box sx={containerStyle3}>
       <Box>
@@ -40,16 +22,6 @@ const OrderFilter = ({
           Orders
         </Typography>
         <Box component="form" sx={{ display: "flex", gap: "20px" }}>
-          <Box sx={searchFieldContainerStyle}>
-            <TextField
-              label="Search name"
-              variant="outlined"
-              fullWidth
-              value={searchInput}
-              onChange={handleSearchInputChange}
-              sx={{ width: "300px" }}
-            />
-          </Box>
           <Box sx={dateFieldContainerStyle}>
             <Box sx={datePickerContainerStyle}>
               <TextField

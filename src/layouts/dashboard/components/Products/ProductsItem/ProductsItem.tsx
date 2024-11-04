@@ -7,7 +7,6 @@ import {
   Tooltip,
   IconButton,
   Grid,
-  Checkbox,
 } from "@mui/material";
 
 import { PropsItem } from "../../../pages/ProductsDashboard/types";
@@ -18,8 +17,6 @@ import { useState } from "react";
 
 const ProductsItem = ({
   item,
-  selectedItems,
-  handleCheckboxChange,
   setUpdateList,
   setOpen,
   onDeleteProduct,
@@ -34,15 +31,10 @@ const ProductsItem = ({
       (category: { _id: string }) => category._id === item.categoryId
     )?.name || "Unknown";
 
-  console.log("categories", categories);
-
   const setSelectedItem = (status: "edit" | "view" | "delete") => {
     setOpen(true);
     dispatch(selectItem({ itemData: { item, status } }));
   };
-  const isChecked = selectedItems.includes(item._id);
-
-  const handleCheckboxChangeLocal = () => handleCheckboxChange(item._id);
 
   const handleEditItem = () => setSelectedItem("edit");
 
@@ -54,9 +46,6 @@ const ProductsItem = ({
 
   return (
     <TableRow>
-      <TableCell>
-        <Checkbox checked={isChecked} onChange={handleCheckboxChangeLocal} />
-      </TableCell>
       <TableCell>
         <Grid
           container

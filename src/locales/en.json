@@ -98,5 +98,6 @@
   "passwordRegister": "Password",
   "log_in": "Log in",
   "registration_failed": "Registration failed",
-  "error_occurred": "An error occurred. Please try again."
+  "error_occurred": "An error occurred. Please try again.",
+  "shoppingText": "Your Shopping Cart"
 }

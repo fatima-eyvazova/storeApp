@@ -16,7 +16,6 @@ export const apiSlice = createApi({
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as { auth: { token?: string } };
       const token = state.auth?.token;
-      console.log("Token: ", state.auth);
 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
@@ -25,7 +24,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Category", "Product", "Basket", "Profile", "Admin"],
+  tagTypes: ["Category", "Product", "Basket", "Profile", "Admin", "Order"],
   endpoints: (builder) => ({
     getCategories: builder.query<void, void>({
       query: () => "/dashboard/categories",
@@ -174,6 +173,14 @@ export const apiSlice = createApi({
       providesTags: ["Basket"],
     }),
 
+    allRemoveBasket: builder.mutation({
+      query: () => ({
+        url: "/site/basket/allremove",
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Basket"],
+    }),
+
     removeBasketItem: builder.mutation({
       query: ({ id, token }) => ({
         url: `/site/basket/${id}`,
@@ -182,6 +189,7 @@ export const apiSlice = createApi({
           Authorization: `Bearer ${token}`,
         },
       }),
+      invalidatesTags: ["Basket"],
     }),
 
     addNewBasketItem: builder.mutation({
@@ -222,6 +230,7 @@ export const apiSlice = createApi({
 
         return constructedQuery;
       },
+      providesTags: ["Order"],
     }),
 
     updateOrderStatus: builder.mutation<
@@ -233,6 +242,7 @@ export const apiSlice = createApi({
         method: "PUT",
         body: { status },
       }),
+      invalidatesTags: ["Order"],
     }),
     createOrder: builder.mutation({
       query: (orderData) => ({
@@ -240,6 +250,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: orderData,
       }),
+      invalidatesTags: ["Order"],
     }),
 
     giveFeedback: builder.mutation({
@@ -291,7 +302,6 @@ export const {
   useGetSiteShopQuery,
   useGetBasketItemsQuery,
   useRemoveBasketItemMutation,
-  // useUpdateBasketItemMutation,
   useGetOrdersQuery,
   useUpdateOrderStatusMutation,
   useCreateOrderMutation,
@@ -299,4 +309,5 @@ export const {
   useGetSiteInfoQuery,
   useUpdateSiteInfoMutation,
   useGetProductReviewsQuery,
+  useAllRemoveBasketMutation,
 } = apiSlice;

@@ -83,14 +83,6 @@ const Shop = () => {
     );
   }, []);
 
-  // const handleRatingSelection = useCallback(
-  //   (rating: number) => {
-  //     if (!selectedRating.includes(rating)) {
-  //       setSelectedRating((prev) => [...prev, rating]);
-  //     }
-  //   },
-  //   [selectedRating]
-  // );
   const handleRatingSelection = useCallback(
     (rating: number) => {
       if (selectedRating.includes(rating)) {

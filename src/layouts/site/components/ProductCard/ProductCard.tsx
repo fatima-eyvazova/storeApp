@@ -13,9 +13,8 @@ import {
 import {
   useAddNewBasketItemMutation,
   useAddRemoveFavoriteMutation,
-  useGetBasketItemsQuery,
 } from "../../../../redux/slices/shared/apiSlice";
-import { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   basketButtonStyles,
   heartIconContainerStyles,
@@ -35,40 +34,39 @@ type Props = {
   key: string;
 };
 
-const ProductCard = ({ product, favs }: Props) => {
+const ProductCard = React.memo(({ product, favs }: Props) => {
   const { _id: id, title, productPrice, salePrice, images, stock } = product;
   const { token, user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const [localQuantity, setLocalQuantity] = useState(1);
-  console.log("isProductInStock", stock);
 
   const [addToBasket] = useAddNewBasketItemMutation();
   const rating = product?.rating;
-  const { data: dbBasketList } = useGetBasketItemsQuery({});
-  console.log("dbBasketList", dbBasketList);
 
   const [addRemoveFavorite, { isLoading }] = useAddRemoveFavoriteMutation();
 
   const favorite = favs?.find((pr) => pr?._id === product?._id);
-  const [isFavorite, setIsFavorite] = useState(favorite);
+  const [isFavorite, setIsFavorite] = useState(!!favorite);
 
-  const handleAddToBasket = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    if (token && user?.role === "client") {
-      try {
-        await addToBasket({
-          userId: user?._id,
-          productId: id,
-          productCount: localQuantity,
-        });
-        console.log("productCount", localQuantity);
+  const handleAddToBasket = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      if (token && user?.role === "client") {
+        try {
+          await addToBasket({
+            userId: user?._id,
+            productId: id,
+            productCount: localQuantity,
+          });
 
-        setLocalQuantity((prev) => prev + 1);
-      } catch (error) {
-        console.error("Basket update error:", error);
+          setLocalQuantity((prev) => prev + 1);
+        } catch (error) {
+          console.error("Basket update error:", error);
+        }
       }
-    }
-  };
+    },
+    [addToBasket, id, localQuantity, token, user]
+  );
 
   const handleClick = () => {
     navigate(`/products/${id}`);
@@ -164,6 +162,6 @@ const ProductCard = ({ product, favs }: Props) => {
       </Box>
     </Box>
   );
-};
+});
 
 export default ProductCard;

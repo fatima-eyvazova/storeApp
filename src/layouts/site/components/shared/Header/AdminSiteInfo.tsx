@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import {
   useGetSiteInfoQuery,
@@ -22,11 +22,13 @@ const AdminSiteInfo = () => {
     }
   }, [siteInfo]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setSiteName(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
       const updatedSiteInfo = { _id: siteInfo.data._id, name: siteName };

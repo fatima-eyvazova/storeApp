@@ -18,7 +18,7 @@ export const selectedItemSlice = createSlice({
       state.itemData = action.payload.itemData;
     },
     clearItemData: (state) => {
-      state.itemData = initialState.itemData; // Bura baxın
+      state.itemData = initialState.itemData;
     },
   },
 });

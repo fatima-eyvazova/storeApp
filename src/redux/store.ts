@@ -2,7 +2,6 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { apiSlice } from "../redux/slices/shared/apiSlice";
-// import basketSliceReducer from "./slices/site/basketSlice";
 import authSliceReducer from "./slices/shared/authSlice";
 import selectedItemSliceReducer from "./slices/dashboard/selectedItemSlice";
 
@@ -14,7 +13,6 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authSliceReducer,
-  // basket: basketSliceReducer,
   selectedItem: selectedItemSliceReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
@@ -22,7 +20,6 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  // reducer: rootReducer,
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
