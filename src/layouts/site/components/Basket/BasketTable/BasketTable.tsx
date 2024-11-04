@@ -10,26 +10,18 @@ import { useTranslation } from "react-i18next";
 import { BasketItemType } from "../../../page/Basket/type";
 import BasketItem from "../BasketItem";
 
-interface BasketTableProps {
+type BasketTableProps = {
   basketItems: BasketItemType[];
-  handleIncreaseQuantity: (
-    productId: string,
-    currentQuantity: number
-  ) => Promise<void>;
-  handleDecreaseQuantity: (
-    productId: string,
-    currentQuantity: number
-  ) => Promise<void>;
-  handleRemoveItem: (productId: string) => Promise<void>;
-  loading: boolean;
-}
+  handleIncreaseQuantity: (productId: string, currentQuantity: number) => void;
+  handleDecreaseQuantity: (productId: string, currentQuantity: number) => void;
+  handleRemoveItem: (productId: string) => void;
+};
 
 const BasketTable: React.FC<BasketTableProps> = ({
   basketItems,
   handleIncreaseQuantity,
   handleDecreaseQuantity,
   handleRemoveItem,
-  loading,
 }) => {
   const { t } = useTranslation();
 
@@ -49,7 +41,7 @@ const BasketTable: React.FC<BasketTableProps> = ({
         {basketItems.map((basketItem: BasketItemType) => {
           const { productCount } = basketItem;
 
-          if (loading) {
+          if (!basketItem) {
             return (
               <TableRow key={basketItem._id}>
                 <TableCell colSpan={6}>{t("Loading")}</TableCell>
@@ -59,7 +51,7 @@ const BasketTable: React.FC<BasketTableProps> = ({
 
           if (!basketItem?.images || basketItem?.images?.length === 0) {
             return (
-              <TableRow key={basketItem._id}>
+              <TableRow key={basketItem?._id}>
                 <TableCell colSpan={6}>{t("NoImageAvailable")}</TableCell>
               </TableRow>
             );

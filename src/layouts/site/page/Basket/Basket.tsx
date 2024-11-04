@@ -1,26 +1,17 @@
 import { Link } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
-import {
-  Button,
-  Box,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
 import { ROUTES } from "../../../../router/routeNames";
 import {
   useAddNewBasketItemMutation,
   useGetBasketItemsQuery,
 } from "../../../../redux/slices/shared/apiSlice";
 import MainLayout from "../../components/shared/MainLayout/MainLayout";
-import BasketItem from "../../components/Basket/BasketItem";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { BasketItemType, User } from "./type";
 import { shoppingInfo } from "../../../../constants";
+import BasketTable from "../../components/Basket/BasketTable/BasketTable";
 
 function Basket() {
   const { t } = useTranslation();
@@ -34,8 +25,6 @@ function Basket() {
       refetchOnMountOrArgChange: true,
     }
   );
-
-  console.log("dbBasketList", dbBasketList);
 
   const updateTotal = useCallback((basketItems: BasketItemType[]) => {
     const totalAmount = basketItems.reduce(
@@ -112,6 +101,7 @@ function Basket() {
     },
     [basketDb, updateTotal, addToBasket, user]
   );
+
   useEffect(() => {
     if (dbBasketList) {
       setBasketDb(dbBasketList?.products);
@@ -128,55 +118,12 @@ function Basket() {
         <Box>
           {basketDb?.length > 0 ? (
             <>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>{t("image")}</TableCell>
-                    <TableCell>{t("productName")}</TableCell>
-                    <TableCell>{t("priceBasket")}</TableCell>
-                    <TableCell>{t("quantity")}</TableCell>
-                    <TableCell>{t("subtotal")}</TableCell>
-                    <TableCell>{t("remove")}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {basketDb.map((basketItem: BasketItemType) => {
-                    const { productCount } = basketItem;
-
-                    if (!basketItem) {
-                      return (
-                        <TableRow key={basketItem._id}>
-                          <TableCell colSpan={6}>{t("Loading")}</TableCell>
-                        </TableRow>
-                      );
-                    }
-
-                    if (
-                      !basketItem?.images ||
-                      basketItem?.images?.length === 0
-                    ) {
-                      return (
-                        <TableRow key={basketItem?._id}>
-                          <TableCell colSpan={6}>
-                            {t("NoImageAvailable")}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
-
-                    return (
-                      <BasketItem
-                        key={basketItem._id}
-                        product={basketItem}
-                        basketItem={{ productCount, _id: basketItem._id }}
-                        handleIncreaseQuantity={handleIncreaseQuantity}
-                        handleDecreaseQuantity={handleDecreaseQuantity}
-                        handleRemoveItem={handleRemoveItem}
-                      />
-                    );
-                  })}
-                </TableBody>
-              </Table>
+              <BasketTable
+                basketItems={basketDb}
+                handleIncreaseQuantity={handleIncreaseQuantity}
+                handleDecreaseQuantity={handleDecreaseQuantity}
+                handleRemoveItem={handleRemoveItem}
+              />
               <Box sx={shoppingInfo}>
                 <Button component={Link} to="/" variant="contained">
                   {t("continueShopping")}
