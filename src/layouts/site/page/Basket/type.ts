@@ -33,8 +33,17 @@ export interface User {
   _id: string;
 }
 
-export interface BasketItemProps {
+export type BasketItemProps = {
+  product: GetProductItem;
   _id: string;
   quantity: number;
-  product: GetProductItem;
-}
+  title: string;
+  salePrice: number;
+  images: {
+    url: string;
+  }[];
+  basketItem: Props["basketItem"];
+  handleIncreaseQuantity: (productId: string, currentQuantity: number) => void;
+  handleDecreaseQuantity: (productId: string, currentQuantity: number) => void;
+  handleRemoveItem: (productId: string) => void;
+};

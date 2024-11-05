@@ -7,17 +7,10 @@ import {
   TableRow,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { BasketItemType } from "../../../page/Basket/type";
+import { BasketItemProps, BasketItemType } from "../../../page/Basket/type";
 import BasketItem from "../BasketItem";
 
-type BasketTableProps = {
-  basketItems: BasketItemType[];
-  handleIncreaseQuantity: (productId: string, currentQuantity: number) => void;
-  handleDecreaseQuantity: (productId: string, currentQuantity: number) => void;
-  handleRemoveItem: (productId: string) => void;
-};
-
-const BasketTable: React.FC<BasketTableProps> = ({
+const BasketTable: React.FC<BasketItemProps> = ({
   basketItems,
   handleIncreaseQuantity,
   handleDecreaseQuantity,

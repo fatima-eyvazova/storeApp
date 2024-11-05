@@ -972,3 +972,22 @@ export const barChart = {
   height: "250px",
   cursor: "pointer",
 };
+
+export const navbarToolbar = {
+  width: "97vw",
+  display: "flex",
+  justifyContent: "center",
+};
+
+export const navbarBox = {
+  position: "static",
+  backgroundColor: "black",
+  color: "white",
+};
+
+export const linksBox = {
+  display: "flex",
+  gap: 2,
+  width: "40vw",
+  justifyContent: "space-between",
+};

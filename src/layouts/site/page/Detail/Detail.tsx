@@ -16,7 +16,7 @@ import MainLayout from "../../components/shared/MainLayout/MainLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/types";
 import { useTranslation } from "react-i18next";
-import { useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import ProductReviewList from "../../components/Details/ProductReviewList";
 import { detailBox, infoBox } from "../../../../constants";
 import { ROUTES } from "../../../../router/routeNames";
@@ -82,30 +82,36 @@ const ProductDetails: React.FC<ProductReviewListProps> = () => {
     }
   };
 
-  const handleAddToBasket = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (token && user?.role === "client") {
-      try {
-        await addToBasket({
-          userId: user?._id,
-          productId: id,
-          productCount: localQuantity,
-        });
+  const handleAddToBasket = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (token && user?.role === "client") {
+        try {
+          await addToBasket({
+            userId: user?._id,
+            productId: id,
+            productCount: localQuantity,
+          });
 
-        setLocalQuantity((prev) => prev + 1);
-      } catch (error) {
-        console.error("Basket update error:", error);
+          setLocalQuantity((prev) => prev + 1);
+        } catch (error) {
+          console.error("Basket update error:", error);
+        }
       }
-    }
-  };
+    },
+    [token, user?.role, localQuantity, addToBasket, id]
+  );
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsFavorite((prev: unknown) => !prev);
-    addRemoveFavorite({
-      product_id: id,
-    });
-  };
+  const handleFavoriteClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsFavorite((prev: unknown) => !prev);
+      addRemoveFavorite({
+        product_id: id,
+      });
+    },
+    [id, addRemoveFavorite]
+  );
 
   return (
     <MainLayout>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -24,7 +24,7 @@ import {
   loginBoxButton,
 } from "../../../../../constants";
 
-const Header = React.memo(() => {
+const Header = () => {
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const { i18n } = useTranslation();
 
@@ -85,6 +85,6 @@ const Header = React.memo(() => {
       {openLogoutModal && <LogOutModal setOpenModal={setOpenLogoutModal} />}
     </>
   );
-});
+};
 
 export default Header;
