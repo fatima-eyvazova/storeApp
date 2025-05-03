@@ -11,7 +11,6 @@ import { useDebounce } from "use-debounce";
 import { IoIosArrowForward } from "react-icons/io";
 import { useGetSiteShopQuery } from "../../../../redux/slices/shared/apiSlice";
 import MainLayout from "../../components/shared/MainLayout/MainLayout";
-import ProductCard from "../../components/ProductCard/ProductCard";
 import FilterAccardions from "../../components/Shop/FilterAccardions/FilterAccardions";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,6 +23,7 @@ import {
   titleStyles,
 } from "../../../../constants";
 import { ROUTES } from "../../../../router/routeNames";
+import ProductCard from "../../components/Products/ProductCard";
 
 const Shop = () => {
   const [page, setPage] = useState(0);

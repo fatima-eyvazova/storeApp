@@ -5,7 +5,6 @@ import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
 import { Box, IconButton } from "@mui/material";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
-import ProductCard from "../ProductCard/ProductCard";
 import { useEffect, useRef } from "react";
 import {
   navButtonStyles,
@@ -13,6 +12,7 @@ import {
   swiperContainerStyles,
 } from "../../../../constants";
 import { GetProductItem } from "../../../../redux/types";
+import ProductCard from "../Products/ProductCard";
 
 interface SwiperProductsProps {
   products: {

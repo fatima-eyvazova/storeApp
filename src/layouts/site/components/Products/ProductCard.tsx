@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
+
+import React, { useCallback, useState } from "react";
 import {
   BasketProduct,
   GetProductItem,
@@ -14,7 +16,6 @@ import {
   useAddNewBasketItemMutation,
   useAddRemoveFavoriteMutation,
 } from "../../../../redux/slices/shared/apiSlice";
-import React, { useCallback, useState } from "react";
 import {
   basketButtonStyles,
   heartIconContainerStyles,

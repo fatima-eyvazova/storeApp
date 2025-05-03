@@ -1,9 +1,9 @@
 import { useGetProfileQuery } from "../../../../redux/slices/shared/apiSlice";
-import ProductCard from "../../components/ProductCard/ProductCard";
 import { Container, Typography, Box } from "@mui/material";
 import MainLayout from "../../components/shared/MainLayout/MainLayout";
 import { useTranslation } from "react-i18next";
 import { favoriteItemStyle } from "../../../../constants";
+import ProductCard from "../../components/Products/ProductCard";
 
 const Favorites = () => {
   const { t } = useTranslation();
