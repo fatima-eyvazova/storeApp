@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
-import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { getBase64 } from "../../../../../utils/convertToBase64";
 import { selectItem } from "../../../../../redux/slices/dashboard/selectedItemSlice";
-import { RootState } from "../../../../../redux/types";
+import { GetProductItem, RootState } from "../../../../../redux/types";
 import {
   useAddCategoryMutation,
   useUpdateCategoryMutation,
@@ -17,6 +16,8 @@ import {
   categorieTypography,
 } from "../../../../../constants";
 import { schema } from "../../../../../validationSchema/addCategory";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 interface FormValues {
   name: string;
@@ -82,8 +83,12 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
     }
   };
 
-  const handleResponse = (res: any) => {
-    const data = res?.data as { success: boolean; message?: string };
+  const handleResponse = (
+    res:
+      | { data: void; error?: undefined }
+      | { data?: undefined; error: FetchBaseQueryError | SerializedError }
+  ) => {
+    const data = res?.data as unknown as { success: boolean; message?: string };
     if (data?.success) {
       setErr("");
       setOpen(false);
@@ -102,9 +107,9 @@ const AddEditeCategory = ({ setOpen, setUpdateList }: Props) => {
   };
 
   useEffect(() => {
-    if (item?.image?.url) {
-      setUrl(item?.image?.url);
-      setValue("image", item?.image?.url);
+    if ((item as GetProductItem)?.image?.url) {
+      setUrl(item?.image?.url || "");
+      setValue("image", item?.image?.url as NonNullable<string>);
     }
   }, [item?.image?.url, setValue]);
 

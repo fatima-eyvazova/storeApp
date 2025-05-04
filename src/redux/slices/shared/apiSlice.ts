@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { GetProductItem, GetProducts } from "../../types";
+import { GetProductItem, GetProducts, UserProfile } from "../../types";
 import {
   GetOrderItem,
   GetOrdersData,
@@ -70,7 +70,10 @@ export const apiSlice = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.data.product.map(({ id }) => ({ type: "Product", id })),
+              ...result.data.product.map(({ id }) => ({
+                type: "Product",
+                id,
+              })),
               { type: "Product", id: "LIST" },
             ]
           : [{ type: "Product", id: "LIST" }],
@@ -138,7 +141,7 @@ export const apiSlice = createApi({
         body: credentials,
       }),
     }),
-    getProfile: builder.query({
+    getProfile: builder.query<UserProfile, void>({
       query: () => "/profile",
       providesTags: ["Profile"],
     }),

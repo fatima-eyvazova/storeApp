@@ -44,7 +44,7 @@ const OurStaffTable = ({ setUpdateList, list }: Props) => {
         {Array.isArray(list)
           ? list.map((admin) => (
               <OurStaffItem
-                key={admin.id}
+                key={admin?.id}
                 admin={admin}
                 setUpdateList={setUpdateList}
               />

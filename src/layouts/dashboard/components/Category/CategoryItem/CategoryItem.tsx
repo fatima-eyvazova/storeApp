@@ -12,8 +12,10 @@ import {
 import { useDispatch } from "react-redux";
 import { selectItem } from "../../../../../redux/slices/dashboard/selectedItemSlice";
 import DeleteModal from "../../../../shared/modals/DeleteModal/DeleteModal";
+import { GetCategoryItem } from "../../../pages/CategoryDashboard/types";
 
 interface Props {
+  item: GetCategoryItem;
   setOpen: (bool: boolean) => void;
   setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
   selectedItems: string[];

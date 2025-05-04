@@ -7,12 +7,16 @@ import AddStaff from "../AddStaff/AddStaff";
 import { ourStaffIconeButton } from "../../../../../constants";
 
 interface Props {
+  updateList: React.Dispatch<React.SetStateAction<boolean>>;
   setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
   onFilter: (filteredList: GetAdmin[]) => void;
   setFilteredAdminList: (filteredList: GetAdmin[]) => void;
 }
 
-const OurStaffDrawer = ({ setUpdateList, updateList }: Props) => {
+const OurStaffDrawer = ({
+  setUpdateList,
+}: // updateList
+Props) => {
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -53,7 +57,7 @@ const OurStaffDrawer = ({ setUpdateList, updateList }: Props) => {
           <AddStaff
             setOpen={setOpen}
             setUpdateList={setUpdateList}
-            updateList={updateList}
+            // updateList={updateList}
           />
         </Box>
       </Drawer>

@@ -6,6 +6,7 @@ import { Pagination, Navigation } from "swiper/modules";
 import { Box, IconButton } from "@mui/material";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { useEffect, useRef } from "react";
+
 import {
   navButtonStyles,
   overlayStyles,

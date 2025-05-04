@@ -4,6 +4,7 @@ import MainLayout from "../../components/shared/MainLayout/MainLayout";
 import { useTranslation } from "react-i18next";
 import { favoriteItemStyle } from "../../../../constants";
 import ProductCard from "../../components/Products/ProductCard";
+import { GetProductItem } from "../../../../redux/types";
 
 const Favorites = () => {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ const Favorites = () => {
           </Box>
         ) : (
           <Box sx={favoriteItemStyle}>
-            {favoriteData.map((product) => (
+            {favoriteData.map((product: GetProductItem) => (
               <Box
                 key={product._id}
                 sx={{ width: { xs: "100%", sm: "48%", md: "30%" } }}

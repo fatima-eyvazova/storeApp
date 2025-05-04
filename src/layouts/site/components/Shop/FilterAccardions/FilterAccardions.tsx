@@ -16,7 +16,10 @@ import {
 } from "@mui/icons-material";
 import { useGetCategoriesQuery } from "../../../../../redux/slices/shared/apiSlice";
 import { useTranslation } from "react-i18next";
-import { GetCategoryItem } from "../../../../dashboard/pages/CategoryDashboard/types";
+import {
+  GetCategoriesResponse,
+  GetCategoryItem,
+} from "../../../../dashboard/pages/CategoryDashboard/types";
 import {
   accordionStyle,
   inputStyle,
@@ -37,7 +40,9 @@ const FilterAccordions = ({
   minMaxPrice,
 }: Props) => {
   const { t } = useTranslation();
-  const { data: categoriesListData } = useGetCategoriesQuery();
+  const { data: categoriesListData } = useGetCategoriesQuery() as {
+    data?: GetCategoriesResponse;
+  };
 
   const [expandedAccordion, setExpandedAccordion] = useState<number | false>(
     false

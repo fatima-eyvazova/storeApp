@@ -28,7 +28,7 @@ const ProductsItem = ({
 
   const categoryName =
     categories?.data?.find(
-      (category: { _id: string }) => category._id === item.categoryId
+      (category: { _id: string }) => category._id === item?.categoryId
     )?.name || "Unknown";
 
   const setSelectedItem = (status: "edit" | "view" | "delete") => {

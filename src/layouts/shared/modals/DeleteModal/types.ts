@@ -4,5 +4,8 @@ export interface Props {
   itemIdList?: string[];
   resource: string;
   setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
-  onDelete: () => void;
+  onDelete?: () => void;
+}
+export interface DeleteCategoryResponse {
+  success: boolean;
 }

@@ -623,7 +623,7 @@ export const deleteButtonStyle = {
   fontSize: 20,
 };
 
-export const formStyles = {
+export const formStyles: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: "16px",
@@ -718,10 +718,10 @@ export const categorieTypography = {
   color: "blue",
 };
 
-export const categorieForm = {
+export const categorieForm: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: "16px",
+  gap: "20px",
 };
 
 export const categorieFormLable = {
@@ -885,7 +885,7 @@ export const ourStaffTypography = {
   color: "blue",
 };
 
-export const ourStaffForm = {
+export const ourStaffForm: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: "16px",
@@ -933,7 +933,7 @@ export const footerBox = {
   flexDirection: "column",
   width: "100vw",
   backgroundColor: "black",
-  height: "20vw",
+  height: "27vw",
   color: "white",
 };
 

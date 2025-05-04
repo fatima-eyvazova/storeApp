@@ -1,5 +1,4 @@
 import { IoAddOutline } from "react-icons/io5";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import { CiCircleRemove } from "react-icons/ci";
@@ -12,7 +11,6 @@ import {
 } from "../../../../redux/slices/shared/apiSlice";
 import AddProduct from "../../components/Products/AddProduct/AddProduct";
 import ProductsTable from "../../components/Products/ProductsTable/ProductsTable";
-import DeleteModal from "../../../shared/modals/DeleteModal/DeleteModal";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { Box, Stack } from "@mui/system";
 import { Button, Typography } from "@mui/material";
@@ -88,6 +86,7 @@ const ProductsDashboard = () => {
       }
       const finalImages = [...imgBase64];
       let res;
+
       if (itemData?.item && itemData.status === "edit") {
         const existingImages =
           values?.images?.filter((img) => !(img instanceof File)) || [];
@@ -153,13 +152,6 @@ const ProductsDashboard = () => {
             </Typography>
             <Box>
               <Stack direction="row" spacing={2} mb={3}>
-                <Button
-                  variant="contained"
-                  color="error"
-                  startIcon={<RiDeleteBin6Line />}
-                >
-                  Delete
-                </Button>
                 <Button onClick={toggleDrawer}>
                   <IoAddOutline />
                   <Typography>Add Product</Typography>

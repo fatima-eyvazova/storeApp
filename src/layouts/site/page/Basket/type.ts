@@ -34,6 +34,7 @@ export interface User {
 }
 
 export type BasketItemProps = {
+  basketItems: [];
   product: GetProductItem;
   _id: string;
   quantity: number;

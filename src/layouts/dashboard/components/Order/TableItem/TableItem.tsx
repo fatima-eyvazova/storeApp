@@ -38,7 +38,8 @@ const TableItem: React.FC<TableItemProps> = ({
       } else {
         alert(response.message || "Statusu dəyişmək mümkün olmadı");
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       alert(error?.data?.message || "Xəta baş verdi");
       console.error("Error updating order status:", error);
     }

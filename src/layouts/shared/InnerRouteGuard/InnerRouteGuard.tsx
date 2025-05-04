@@ -20,7 +20,7 @@ const InnerRouteGuard = ({ isClient, children }: Props) => {
 
   const navigate = useNavigate();
 
-  const { data, error, isLoading } = useGetProfileQuery(token, {
+  const { error, isLoading } = useGetProfileQuery(token, {
     skip: !token,
   });
 

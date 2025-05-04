@@ -1,4 +1,5 @@
 export type GetAdmin = {
+  id: string;
   _id: string;
   name: string;
   surname: string;

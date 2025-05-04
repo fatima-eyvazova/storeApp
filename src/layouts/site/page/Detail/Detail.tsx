@@ -20,9 +20,9 @@ import { useCallback, useState } from "react";
 import ProductReviewList from "../../components/Details/ProductReviewList";
 import { detailBox, infoBox } from "../../../../constants";
 import { ROUTES } from "../../../../router/routeNames";
-import { ProductReviewListProps } from "./type";
+import { Order } from "./type";
 
-const ProductDetails: React.FC<ProductReviewListProps> = () => {
+const ProductDetails = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const userId = useSelector((state: RootState) => state.auth.user);
@@ -47,7 +47,9 @@ const ProductDetails: React.FC<ProductReviewListProps> = () => {
     perPage: 10,
     page: 1,
     status: "delivered",
-  });
+  }) as {
+    data: { data: Order[] };
+  };
 
   const product = data?.data;
 

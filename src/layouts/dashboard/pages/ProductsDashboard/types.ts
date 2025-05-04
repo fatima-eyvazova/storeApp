@@ -72,6 +72,9 @@ export type PropsItem = {
   setOpen: (bool: boolean) => void;
   setUpdateList: React.Dispatch<React.SetStateAction<boolean>>;
   onDeleteProduct: (id: string) => Promise<void>;
+  categories: {
+    data: { _id: string; name: string }[];
+  };
 };
 
 export interface PropsProductsTable {
@@ -82,7 +85,7 @@ export interface PropsProductsTable {
   page: number;
   perPage: number;
   setOpen: (open: boolean) => void;
-  onDeleteProduct: (id: string) => void;
+  onDeleteProduct: (id: string) => Promise<void>;
   handleCheckboxChange: (id: string) => void;
   selectCheckboxes: () => void;
   handleChangePage: (event: unknown, newPage: number) => void;
@@ -99,6 +102,7 @@ export interface PropsAddProduct {
     }[];
   };
   selectedImages: { url: string; public_id: string }[];
+
   err: string;
   setErr: Dispatch<SetStateAction<string>>;
   handleFormSubmit: (values: ProductData) => Promise<void>;

@@ -37,6 +37,47 @@ export type RootState = {
 };
 
 export interface GetProductItem {
+  image: {
+    url: string;
+    public_id: string;
+  };
+  _id: string;
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+  title: string;
+  productPrice: number;
+  salePrice?: number;
+  images: Array<{ url: string; public_id?: string }>;
+  stock: number;
+  rating: {
+    avgRating: number;
+    overallRatingCount: number;
+  };
+}
+
+export type FavoriteProduct = {
+  id: string;
+  title: string;
+  price: number;
+};
+
+export type UserProfile = {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    favorites: FavoriteProduct[];
+  };
+};
+export interface GetAddProductItem {
+  categoryId: string;
+  isPublish: boolean;
+  image: {
+    url: string;
+    public_id: string;
+  };
   _id: string;
   name: string;
   price: number;

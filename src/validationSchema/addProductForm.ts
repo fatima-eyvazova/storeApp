@@ -10,7 +10,8 @@ export const schema = Yup.object({
   images: Yup.mixed().test(
     "fileCount",
     "At least two images are required",
-    (value) => value && value.length >= 2
+    // (value) => value && value.length >= 2
+    (value) => Array.isArray(value) && value.length >= 2
   ),
   isPublish: Yup.boolean().required(),
 }).required();
