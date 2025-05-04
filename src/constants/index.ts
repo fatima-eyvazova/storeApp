@@ -577,7 +577,7 @@ export const buttonStylesNotFound = {
     backgroundColor: "#1565c0",
   },
 };
-export const drawerStyles = {
+export const drawerStyles: React.CSSProperties = {
   fontSize: "24px",
   position: "absolute",
   right: "50px",

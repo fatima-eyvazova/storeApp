@@ -31,6 +31,7 @@ const ProductsDashboard = () => {
   const [selectedImages, setSelectedImages] = useState<
     { url: string; public_id: string }[]
   >([]);
+
   const [err, setErr] = useState("");
   const itemData = useSelector(
     (state: RootState) => state.selectedItem.itemData
@@ -161,7 +162,10 @@ const ProductsDashboard = () => {
                     onClose={closeDrawer}
                     onClick={handleClick}
                   >
-                    <CiCircleRemove sx={drawerStyles} onClick={closeDrawer} />
+                    <CiCircleRemove
+                      style={drawerStyles}
+                      onClick={closeDrawer}
+                    />
                     <AddProduct
                       selectedImages={selectedImages}
                       err={err}

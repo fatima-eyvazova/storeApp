@@ -64,8 +64,7 @@ const AddProduct = ({
       console.error("An error occurred while deleting the image:", error);
     }
   };
-  const getDeleteHandler = (index: number, url: string) => () =>
-    handleDeleteImage(index, url);
+  const getDeleteHandler = (index: number) => () => handleDeleteImage(index);
 
   const handleImageChange = (event: {
     target: { files: Iterable<unknown> | ArrayLike<unknown> };
@@ -84,11 +83,9 @@ const AddProduct = ({
 
   useEffect(() => {
     if (item?.images && item?.images.length > 0) {
-      const imageUrls = item?.image.map(
-        (img: { url: string; public_id: string }) => {
-          return { url: img.url, public_id: img.public_id };
-        }
-      );
+      const imageUrls = item?.images.map((img) => {
+        return { url: img.url, public_id: img.public_id as string };
+      });
 
       setSelectedImages(imageUrls);
       setValue("images", imageUrls);
@@ -101,7 +98,18 @@ const AddProduct = ({
   const handleNonNegativeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const nonNegativeValue = Math.max(0, +value);
-    setValue(name, nonNegativeValue);
+    setValue(
+      name as
+        | "categoryId"
+        | "stock"
+        | "salePrice"
+        | "productPrice"
+        | "title"
+        | "description"
+        | "images"
+        | "isPublish",
+      nonNegativeValue
+    );
   };
 
   const isBtnDisabled =
@@ -202,7 +210,7 @@ const AddProduct = ({
                 />
                 <Button
                   size="small"
-                  onClick={getDeleteHandler(index, url)}
+                  onClick={getDeleteHandler(index)}
                   sx={deleteButtonStyle}
                 >
                   X
