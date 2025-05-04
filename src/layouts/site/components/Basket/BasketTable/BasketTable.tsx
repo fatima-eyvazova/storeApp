@@ -15,7 +15,7 @@ const BasketTable: React.FC<BasketItemProps> = ({
   handleIncreaseQuantity,
   handleDecreaseQuantity,
   handleRemoveItem,
-}) => {
+}: BasketItemProps) => {
   const { t } = useTranslation();
 
   return (
@@ -36,7 +36,7 @@ const BasketTable: React.FC<BasketItemProps> = ({
 
           if (!basketItem) {
             return (
-              <TableRow key={basketItem._id}>
+              <TableRow key={basketItem?._id}>
                 <TableCell colSpan={6}>{t("Loading")}</TableCell>
               </TableRow>
             );

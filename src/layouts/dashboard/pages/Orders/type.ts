@@ -1,23 +1,27 @@
 import PropTypes from "prop-types";
 
 export type GetOrderItem = {
-  success: unknown;
+  success: boolean;
   message: string;
   _id: string;
   customer: {
     userId: string;
     name: string;
+    email?: string;
   };
   status: string;
   products: {
     productId: string;
     productCount: number;
+    productName: string;
+    productPrice: number;
   }[];
   method: string;
   total: number;
-  completed: null;
+  completed: string | null;
   createdAt: string;
   updatedAt: string;
+  totalCount: number;
 };
 
 export type GetOrdersData = {

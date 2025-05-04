@@ -28,8 +28,16 @@ export interface CategoryItem {
     url: string;
     public_id: string;
   };
+  description: string;
+  imageUrl: string;
+  title: string;
+  productPrice: number;
+  categoryId: string;
 }
-
+export type ImageType = {
+  url: string;
+  public_id: string | null;
+};
 export interface CategoryProps {
   list: CategoryItem[];
   // item: GetCategoryItem;
