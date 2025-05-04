@@ -1,0 +1,17 @@
+export const ROUTES = {
+    home: "/",
+    shop: "/shop",
+    productDetails: "/products/:id",
+    login: "/auth/login",
+    register: "/auth/register",
+    favorites: "/favorites",
+    basket: "/basket",
+    layout: "layout",
+    ourStaff: "/dashboard/ourStaff",
+    checkout: "/checkout",
+    dashboardProducts: "/dashboard/products",
+    productItem: "/dashboard/products/:id",
+    category: "/dashboard/category",
+    orders: "/dashboard/orders",
+    analyst: "/dashboard/analyst",
+};

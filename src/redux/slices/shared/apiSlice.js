@@ -1,0 +1,228 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+const baseApiUrl = import.meta.env.VITE_BASE_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const baseURL = `${baseApiUrl}/api/${apiKey}`;
+export const apiSlice = createApi({
+    reducerPath: "api",
+    baseQuery: fetchBaseQuery({
+        baseUrl: baseURL,
+        prepareHeaders: (headers, { getState }) => {
+            const state = getState();
+            const token = state.auth?.token;
+            if (token) {
+                headers.set("Authorization", `Bearer ${token}`);
+            }
+            headers.set("Content-Type", "application/json");
+            return headers;
+        },
+    }),
+    tagTypes: ["Category", "Product", "Basket", "Profile", "Admin", "Order"],
+    endpoints: (builder) => ({
+        getCategories: builder.query({
+            query: () => "/dashboard/categories",
+            providesTags: ["Category"],
+        }),
+        addCategory: builder.mutation({
+            query: (category) => ({
+                url: "/dashboard/categories",
+                method: "POST",
+                body: category,
+            }),
+            invalidatesTags: ["Category"],
+        }),
+        updateCategory: builder.mutation({
+            query: ({ id, ...body }) => ({
+                url: `/dashboard/categories/${id}`,
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["Category"],
+        }),
+        deleteCategory: builder.mutation({
+            query: (id) => ({
+                url: `/dashboard/categories/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Category"],
+        }),
+        getProducts: builder.query({
+            query: ({ perPage = 10, page = 0, selectedCategory, searchInput }) => {
+                const constructCategoryQuery = selectedCategory
+                    ? `&categoryId=${selectedCategory}`
+                    : "";
+                const searchQuery = searchInput ? `&search=${searchInput}` : "";
+                return `/dashboard/products?perPage=${perPage}&page=${page + 1}${constructCategoryQuery}${searchQuery}`;
+            },
+            providesTags: (result) => result
+                ? [
+                    ...result.data.product.map(({ id }) => ({
+                        type: "Product",
+                        id,
+                    })),
+                    { type: "Product", id: "LIST" },
+                ]
+                : [{ type: "Product", id: "LIST" }],
+        }),
+        addProduct: builder.mutation({
+            query: (product) => ({
+                url: "/dashboard/products",
+                method: "POST",
+                body: product,
+            }),
+            invalidatesTags: ["Product"],
+        }),
+        updateProduct: builder.mutation({
+            query: ({ id, ...body }) => ({
+                url: `/dashboard/products/${id}`,
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["Product"],
+        }),
+        deleteProduct: builder.mutation({
+            query: (id) => ({
+                url: `/dashboard/products/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Product"],
+        }),
+        getSiteProducts: builder.query({
+            query: () => "/site/products?perPage=100",
+            providesTags: ["Product"],
+        }),
+        getProductReviews: builder.query({
+            query: (id) => `/site/products/${id}/reviews`,
+        }),
+        getProductById: builder.query({
+            query: (id) => `/site/products/${id}`,
+        }),
+        registerUser: builder.mutation({
+            query: (userData) => ({
+                url: "/site/register",
+                method: "POST",
+                body: userData,
+            }),
+        }),
+        loginUser: builder.mutation({
+            query: (credentials) => ({
+                url: "/login",
+                method: "POST",
+                body: credentials,
+            }),
+        }),
+        getProfile: builder.query({
+            query: () => "/profile",
+            providesTags: ["Profile"],
+        }),
+        getSiteShop: builder.query({
+            query: ({ page, perPage, filters }) => `/site/products?isPublish=true&page=${page}&perPage=${perPage}${filters || ""}`,
+        }),
+        getAdmins: builder.query({
+            query: (token) => ({
+                url: "/dashboard/users",
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }),
+        }),
+        addStaff: builder.mutation({
+            query: (newStaff) => ({
+                url: "/dashboard/register",
+                method: "POST",
+                body: newStaff,
+            }),
+        }),
+        getBasketItems: builder.query({
+            query: () => "/site/basket",
+            providesTags: ["Basket"],
+        }),
+        allRemoveBasket: builder.mutation({
+            query: () => ({
+                url: "/site/basket/allremove",
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Basket"],
+        }),
+        removeBasketItem: builder.mutation({
+            query: ({ id, token }) => ({
+                url: `/site/basket/${id}`,
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }),
+            invalidatesTags: ["Basket"],
+        }),
+        addNewBasketItem: builder.mutation({
+            query: (basket) => ({
+                url: `/site/basket`,
+                method: "POST",
+                body: basket,
+            }),
+        }),
+        addRemoveFavorite: builder.mutation({
+            query: ({ product_id }) => ({
+                url: "/site/products/favorites",
+                method: "PUT",
+                body: { product_id },
+            }),
+            invalidatesTags: ["Profile"],
+        }),
+        getOrders: builder.query({
+            query: ({ perPage, page, startDate, endDate, search, status }) => {
+                let constructedQuery = `/dashboard/orders?perPage=${perPage}&page=${page}`;
+                if (startDate)
+                    constructedQuery += `&startDate=${startDate}`;
+                if (endDate)
+                    constructedQuery += `&endDate=${endDate}`;
+                if (search)
+                    constructedQuery += `&search=${search}`;
+                if (status)
+                    constructedQuery += `&status=${status}`;
+                return constructedQuery;
+            },
+            providesTags: ["Order"],
+        }),
+        updateOrderStatus: builder.mutation({
+            query: ({ orderId, status }) => ({
+                url: `/dashboard/orders/${orderId}`,
+                method: "PUT",
+                body: { status },
+            }),
+            invalidatesTags: ["Order"],
+        }),
+        createOrder: builder.mutation({
+            query: (orderData) => ({
+                url: "/site/orders",
+                method: "POST",
+                body: orderData,
+            }),
+            invalidatesTags: ["Order"],
+        }),
+        giveFeedback: builder.mutation({
+            query: (feedbackData) => ({
+                url: "/site/products/feedback",
+                method: "POST",
+                body: feedbackData,
+            }),
+        }),
+        getSiteInfo: builder.query({
+            query: () => "/dashboard/site-info",
+        }),
+        updateSiteInfo: builder.mutation({
+            query: (siteInfo) => ({
+                url: "/dashboard/site-info",
+                method: "PUT",
+                body: siteInfo,
+            }),
+        }),
+        deleteUser: builder.mutation({
+            query: ({ user_id }) => ({
+                url: `/dashboard/users/${user_id}`,
+                method: "DELETE",
+            }),
+        }),
+    }),
+});
+export const { useDeleteUserMutation, useGetCategoriesQuery, useAddCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation, useGetProductsQuery, useAddProductMutation, useUpdateProductMutation, useDeleteProductMutation, useAddNewBasketItemMutation, useGetSiteProductsQuery, useGetProductByIdQuery, useAddRemoveFavoriteMutation, useRegisterUserMutation, useLoginUserMutation, useAddStaffMutation, useGetProfileQuery, useGetAdminsQuery, useGetSiteShopQuery, useGetBasketItemsQuery, useRemoveBasketItemMutation, useGetOrdersQuery, useUpdateOrderStatusMutation, useCreateOrderMutation, useGiveFeedbackMutation, useGetSiteInfoQuery, useUpdateSiteInfoMutation, useGetProductReviewsQuery, useAllRemoveBasketMutation, } = apiSlice;
