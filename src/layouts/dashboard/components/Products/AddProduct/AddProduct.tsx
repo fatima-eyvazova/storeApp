@@ -11,7 +11,7 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../../../redux/types";
+import { GetAddProductItem, RootState } from "../../../../../redux/types";
 import { schema } from "../../../../../validationSchema/addProductForm";
 import { PropsAddProduct } from "../../../pages/ProductsDashboard/types";
 import {
@@ -32,7 +32,8 @@ const AddProduct = ({
   const itemData = useSelector(
     (state: RootState) => state.selectedItem.itemData
   );
-  const item = itemData?.item;
+  // const item = itemData?.item;
+  const item = itemData?.item as GetAddProductItem;
 
   const {
     register,
@@ -43,11 +44,11 @@ const AddProduct = ({
     defaultValues: {
       title: item?.title || "",
       description: item?.description || "",
-      categoryId: item?.categoryId || "",
-      stock: item?.stock || "",
-      images: item?.images || [],
-      salePrice: item?.salePrice || "",
-      productPrice: item?.productPrice || "",
+      categoryId: item?.categoryId,
+      stock: item?.stock,
+      images: item?.image || [],
+      salePrice: item?.salePrice,
+      productPrice: item?.productPrice,
       isPublish: item?.isPublish || false,
     },
     mode: "onChange",
@@ -72,7 +73,7 @@ const AddProduct = ({
     const files = Array.from(event.target.files);
     const imageUrls = files.map((file) => {
       return {
-        url: URL.createObjectURL(file),
+        url: URL.createObjectURL(file as Blob | MediaSource),
         public_id: null,
       };
     });
@@ -83,9 +84,11 @@ const AddProduct = ({
 
   useEffect(() => {
     if (item?.images && item?.images.length > 0) {
-      const imageUrls = item?.images.map((img) => {
-        return { url: img.url, public_id: img.public_id };
-      });
+      const imageUrls = item?.image.map(
+        (img: { url: string; public_id: string }) => {
+          return { url: img.url, public_id: img.public_id };
+        }
+      );
 
       setSelectedImages(imageUrls);
       setValue("images", imageUrls);
@@ -95,7 +98,7 @@ const AddProduct = ({
     }
   }, [item, setValue]);
 
-  const handleNonNegativeInput = (e) => {
+  const handleNonNegativeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const nonNegativeValue = Math.max(0, +value);
     setValue(name, nonNegativeValue);
@@ -112,7 +115,7 @@ const AddProduct = ({
       <Typography style={{ fontSize: "16px", marginBottom: 3 }}>
         Add your product and necessary information from here
       </Typography>
-      <form onSubmit={handleSubmit(handleFormSubmit)} sx={formStyles}>
+      <form onSubmit={handleSubmit(handleFormSubmit)} style={formStyles}>
         <TextField
           label="Product Title"
           variant="outlined"
