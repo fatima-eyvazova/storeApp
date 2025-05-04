@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { GetProductItem, GetProducts, UserProfile } from "../../types";
+import {
+  BasketProduct,
+  GetProductItem,
+  GetProducts,
+  UserProfile,
+} from "../../types";
 import {
   GetOrderItem,
   GetOrdersData,
@@ -67,10 +72,11 @@ export const apiSlice = createApi({
           page + 1
         }${constructCategoryQuery}${searchQuery}`;
       },
+
       providesTags: (result) =>
         result
           ? [
-              ...result.data.product.map(({ id }) => ({
+              ...result.data.product.map(({ id }: { id: string }) => ({
                 type: "Product",
                 id,
               })),
@@ -171,7 +177,7 @@ export const apiSlice = createApi({
         body: newStaff,
       }),
     }),
-    getBasketItems: builder.query({
+    getBasketItems: builder.query<{ products: BasketProduct[] }, string>({
       query: () => "/site/basket",
       providesTags: ["Basket"],
     }),

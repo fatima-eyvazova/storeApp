@@ -187,7 +187,7 @@ export const shoppingExperienceTextStyles = {
   width: "69%",
 };
 
-export const shopNowButtonStyles = {
+export const shopNowButtonStyles: React.CSSProperties = {
   backgroundColor: "#26c6d1",
   color: "#ffffff",
   borderRadius: "5px",

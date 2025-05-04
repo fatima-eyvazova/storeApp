@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/types";
 
 const AdminSiteInfo = () => {
-  const { data: siteInfo, refetch } = useGetSiteInfoQuery();
+  const { data: siteInfo, refetch } = useGetSiteInfoQuery(null);
   const [updateSiteInfo] = useUpdateSiteInfoMutation();
   const [siteName, setSiteName] = useState("");
   const [isEditing, setIsEditing] = useState(false);

@@ -3,6 +3,7 @@ export interface BasketProduct extends GetProductItem {
   subtotal: number;
   quantity: number;
   productCount: number;
+  productName: string;
 }
 
 export type Profile = {

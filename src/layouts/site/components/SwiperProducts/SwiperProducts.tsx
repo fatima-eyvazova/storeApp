@@ -14,6 +14,8 @@ import {
 } from "../../../../constants";
 import { GetProductItem } from "../../../../redux/types";
 import ProductCard from "../Products/ProductCard";
+import type { Swiper as SwiperRef } from "swiper";
+import { NavigationOptions } from "swiper/types";
 
 interface SwiperProductsProps {
   products: {
@@ -39,9 +41,10 @@ const SwiperProducts: React.FC<SwiperProductsProps> = ({ products, favs }) => {
     }
   }, []);
 
-  const handleSwiperInit = (swiper: Swiper) => {
-    swiper.params.navigation.prevEl = prevRef.current;
-    swiper.params.navigation.nextEl = nextRef.current;
+  const handleSwiperInit = (swiper: SwiperRef) => {
+    const navigation = swiper.params.navigation as NavigationOptions;
+    navigation.prevEl = prevRef.current;
+    navigation.nextEl = nextRef.current;
     swiper.navigation.init();
     swiper.navigation.update();
   };

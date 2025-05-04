@@ -17,6 +17,7 @@ import { Box, Typography, IconButton } from "@mui/material";
 import { GetProductItem } from "../../../../dashboard/pages/ProductsDashboard/types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/types";
+
 import {
   iconButtonStyle,
   productInfoBox,
@@ -33,7 +34,7 @@ type ProductInfoProps = {
 
 const ProductInfo: React.FC<ProductInfoProps> = React.memo(
   ({ product, isFavorite, handleFavoriteClick, handleAddToBasket }) => {
-    const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+    const [thumbsSwiper, setThumbsSwiper] = useState<SwiperRef | null>(null);
     const { token, user } = useSelector((state: RootState) => state.auth);
 
     const swiper1Ref = useRef<SwiperRef | null>(null);

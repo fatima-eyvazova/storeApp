@@ -28,13 +28,16 @@ export interface BasketItemType {
   productName: string;
   salePrice: number;
   productCount: number;
+  product: {
+    subtotal: number;
+  };
 }
 export interface User {
   _id: string;
 }
 
 export type BasketItemProps = {
-  basketItems: [];
+  basketItems: BasketItemType[];
   product: GetProductItem;
   _id: string;
   quantity: number;

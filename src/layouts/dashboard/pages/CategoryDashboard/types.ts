@@ -8,6 +8,12 @@ export type GetCategoryItem = {
   createdAt: string;
   updatedAt: string;
   icon: string;
+  description: string;
+  imageUrl: string;
+  title: string;
+  productPrice: number;
+  categoryId: string;
+  // images: Array<{ url: string; public_id?: string }>;
 };
 export interface GetCategoriesResponse {
   data: GetCategoryItem[];
